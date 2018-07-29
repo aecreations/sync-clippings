@@ -6,33 +6,33 @@
 import sys
 import json
 import struct
-import configparser
+#import configparser
 
-debug = True
+#debug = True
 
-appName = "Sync Clippings"
-appInternalName = "syncClippings"
-appVer = "1.0a0+"
-confFilename = "syncClippings.ini"
-syncFilename = "clippings-sync.json"
-defaultClippingsData = {
-    "version": "6.0",
-    "createdBy": "Sync Clippings",
-    "userClippingsRoot": []
-}
+# appName = "Sync Clippings"
+# appInternalName = "syncClippings"
+# appVer = "1.0a0+"
+# confFilename = "syncClippings.ini"
+# syncFilename = "clippings-sync.json"
+# defaultClippingsData = {
+#     "version": "6.0",
+#     "createdBy": "Sync Clippings",
+#     "userClippingsRoot": []
+# }
 
-def getSyncFilePath():
-    conf = configparser.ConfigParser()
-    conf.read(confFilename)
-    return conf["Sync File"]["Path"]
+# def getSyncFilePath():
+#     conf = configparser.ConfigParser()
+#     conf.read(confFilename)
+#     return conf["Sync File"]["Path"]
 
-def getAppVer():
-    return appVer
+# def getAppVer():
+#     return appVer
 
-def log(msg):
-    if debug:
-        with open("debug.txt", "a") as file:
-            file.write(msg)
+# def log(msg):
+#     if debug:
+#         with open("debug.txt", "a") as file:
+#             file.write(msg)
     
 def getMessage():
     rawLength = sys.stdin.buffer.read(4)
@@ -54,24 +54,28 @@ def sendMessageEx(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['length'])
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
-    
+
 
 while True:
     msg = getMessage()
-    resp = ""
+    # resp = ""
 
-    log("%s: JSON message received: " % appInternalName)
-    log(dumps(msg))
+    # log("JSON message received: ")
+    # log(dumps(msg))
     
-    if "msgID" not in msg:
-        err = "Error: expected key 'msgID' does not exist!"
-        log(err)
-        sys.stderr.buffer.write("%s: %s" % (appInternalName, err))
-        sys.stderr.buffer.flush()
-        sys.exit(1)
+    # if "msgID" not in msg:
+    #     err = "Error: expected key 'msgID' does not exist!"
+    #     log(err)
+    #     sys.stderr.buffer.write("%s: %s" % (appInternalName, err))
+    #     sys.stderr.buffer.flush()
+    #     sys.exit(1)
     
-    if msg["msgID"] == "get-app-version":
-        resp = getAppVer()
+    # if msg["msgID"] == "get-app-version":
+    #     resp = getAppVer()
 
-    if resp != "":
-        sendMessageEx(encodeMessage(resp))
+    if msg == "testMsg":
+        sendMessageEx(encodeMessage("testResp"))
+    #     resp = "testResp"
+    
+    # if resp != "":
+    #     sendMessageEx(encodeMessage(resp))
