@@ -26,6 +26,9 @@ def getSyncFilePath():
     conf.read(confFilename)
     return conf["Sync File"]["Path"]
 
+def getAppName():
+    return appName
+
 def getAppVer():
     return appVer
 
@@ -41,41 +44,43 @@ def getMessage():
         sys.exit(0)
     messageLength = struct.unpack('@I', rawLength)[0]
     message = sys.stdin.buffer.read(messageLength).decode('utf-8')
-    return json.loads(message)
+    jsonDict = json.loads(message)   
+    return jsonDict
 
-# Encode a message for transmission,
-# given its content.
 def encodeMessage(messageContent):
     encodedContent = json.dumps(messageContent).encode('utf-8')
     encodedLength = struct.pack('@I', len(encodedContent))
     return {'length': encodedLength, 'content': encodedContent}
 
-# Send an encoded message to stdout
-def sendMessageEx(encodedMessage):
+def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['length'])
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
 
-
+    
 while True:
     msg = getMessage()
-    resp = ""
+    resp = None
 
-    log("JSON message received: ")
-    log(msg)
-    
-    # if "msgID" not in msg:
-    #     err = "Error: expected key 'msgID' does not exist!"
-    #     log(err)
-    #     sys.stderr.buffer.write("%s: %s" % (appInternalName, err))
-    #     sys.stderr.buffer.flush()
-    #     sys.exit(1)
-    
-    # if msg["msgID"] == "get-app-version":
-    #     resp = getAppVer()
+    if "msgID" not in msg:
+        err = "Error: expected key 'msgID' does not exist!"
+        log(err)
+        sys.stderr.buffer.write("%s: %s" % (appInternalName, err))
+        sys.stderr.buffer.flush()
+        sys.exit(1)
 
-    if msg == "testMsg":
-        resp = "testResp"
+    log("Value of key 'msgID' from 'msg' dictionary: %s" % msg["msgID"])
     
-    if resp != "":
-        sendMessageEx(encodeMessage(resp))
+    if msg["msgID"] == "get-app-version":
+        resp = {
+            "appName": getAppName(),
+            "appVersion": getAppVer()
+        }
+    elif msg["msgID"] == "get-sync-file-path":
+        resp = {
+            "syncFilePath": getSyncFilePath()
+        }
+
+    if resp != None:
+        sendMessage(encodeMessage(resp))
+
