@@ -6,33 +6,34 @@
 import sys
 import json
 import struct
-#import configparser
+import configparser
 
-#debug = True
+debug = True
 
-# appName = "Sync Clippings"
-# appInternalName = "syncClippings"
-# appVer = "1.0a0+"
-# confFilename = "syncClippings.ini"
-# syncFilename = "clippings-sync.json"
-# defaultClippingsData = {
-#     "version": "6.0",
-#     "createdBy": "Sync Clippings",
-#     "userClippingsRoot": []
-# }
+appName = "Sync Clippings"
+appInternalName = "syncClippings"
+appVer = "1.0a0+"
+confFilename = "syncClippings.ini"
+syncFilename = "clippings-sync.json"
+defaultClippingsData = {
+    "version": "6.0",
+    "createdBy": "Sync Clippings",
+    "userClippingsRoot": []
+}
 
-# def getSyncFilePath():
-#     conf = configparser.ConfigParser()
-#     conf.read(confFilename)
-#     return conf["Sync File"]["Path"]
+def getSyncFilePath():
+    conf = configparser.ConfigParser()
+    conf.read(confFilename)
+    return conf["Sync File"]["Path"]
 
-# def getAppVer():
-#     return appVer
+def getAppVer():
+    return appVer
 
-# def log(msg):
-#     if debug:
-#         with open("debug.txt", "a") as file:
-#             file.write(msg)
+def log(msg):
+    if debug:
+        with open("debug.txt", "a") as file:
+            file.write(msg)
+            file.write("\n")
     
 def getMessage():
     rawLength = sys.stdin.buffer.read(4)
@@ -58,10 +59,10 @@ def sendMessageEx(encodedMessage):
 
 while True:
     msg = getMessage()
-    # resp = ""
+    resp = ""
 
-    # log("JSON message received: ")
-    # log(dumps(msg))
+    log("JSON message received: ")
+    log(msg)
     
     # if "msgID" not in msg:
     #     err = "Error: expected key 'msgID' does not exist!"
@@ -74,8 +75,7 @@ while True:
     #     resp = getAppVer()
 
     if msg == "testMsg":
-        sendMessageEx(encodeMessage("testResp"))
-    #     resp = "testResp"
+        resp = "testResp"
     
-    # if resp != "":
-    #     sendMessageEx(encodeMessage(resp))
+    if resp != "":
+        sendMessageEx(encodeMessage(resp))
