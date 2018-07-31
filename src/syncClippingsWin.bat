@@ -1,2 +1,2 @@
 @echo off
-call python C:\syncClippings\syncClippings.py
+call python syncClippings.py
