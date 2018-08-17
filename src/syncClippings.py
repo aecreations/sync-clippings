@@ -7,6 +7,8 @@ import sys
 import json
 import struct
 import configparser
+import copy
+from pathlib import Path
 
 DEBUG = True
 
@@ -17,7 +19,7 @@ gConfFilename = "syncClippings.ini"
 gSyncFilename = "clippings-sync.json"
 gDefaultClippingsData = {
     "version": "6.0",
-    "createdBy": "Sync Clippings",
+    "createdBy": "Sync Clippings 1.0",
     "userClippingsRoot": []
 }
 
@@ -39,6 +41,35 @@ def setSyncFilePath(aPath):
     with open(gConfFilename, "w") as configFile:
         conf.write(configFile)
     
+def getSyncedClippingsJSON(aSyncFilePath):
+    rv = ""
+    if Path(aSyncFilePath).exists():
+        file = open(aSyncFilePath, "r", encoding="utf-8")
+        rv = file.read()
+    else:
+        fileData = json.dumps(gDefaultClippingsData)
+        file = open(aSyncFilePath, "w", encoding="utf-8")
+        file.write(fileData)
+        rv = fileData
+    if file is not None:
+        file.close()
+    return rv
+
+def updateSyncedClippingsData(aSyncFilePath, aSyncedClippingsRawJSON):
+    syncedClippings = json.loads(aSyncedClippingsRawJSON)
+    syncData = copy.deepcopy(gDefaultClippingsData)
+    syncData["userClippingsRoot"] = syncedClippings
+    syncFileData = json.dumps(syncData)
+
+    try:
+        file = open(aSyncFilePath, "w", encoding="utf-8")
+        file.write(syncFileData)
+    except Exception as e:
+        log("updateSyncedClippingsData(): Error writing to sync file '{0}': {1}".format(aSyncFilePath), e.message)
+    finally:
+        if file is not None:
+            file.close()
+    
 def log(aMsg):
     if DEBUG:
         with open("debug.txt", "a") as file:
@@ -50,7 +81,7 @@ def getResponseOK():
     return rv
 
 def getResponseErr(aErr):
-    template = "Exception {0} (arguments: {1!r})"
+    template = "An exception of type {0} has occurred. Arguments: {1!r}"
     rv = {
         "status": "failure",
         "details": template.format(type(aErr).__name__, aErr.args)
@@ -104,6 +135,19 @@ while True:
         log("Message 'set-sync-file-path': filePath = {0}".format(msg['filePath']))
         try:
             setSyncFilePath(path)
+            resp = getResponseOK()
+        except Exception as e:
+            resp = getResponseErr(e)
+    elif msg["msgID"] == "get-synced-clippings":
+        syncFilePath = getSyncFilePath()
+        resp = {
+            "syncedClippings": getSyncedClippingsJSON(syncFilePath)
+        }
+    elif msg["msgID"] == "set-synced-clippings":
+        syncFilePath = getSyncFilePath()
+        jsonData = msg["syncedClippings"]
+        try:
+            updateSyncedClippingsData(syncFilePath, jsonData)
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
