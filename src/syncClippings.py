@@ -41,28 +41,38 @@ def setSyncFilePath(aPath):
     with open(gConfFilename, "w") as configFile:
         conf.write(configFile)
     
-def getSyncedClippingsJSON(aSyncFilePath):
+def getSyncedClippingsJSON(aSyncFileDir):
     rv = ""
-    if Path(aSyncFilePath).exists():
-        file = open(aSyncFilePath, "r", encoding="utf-8")
+    if not Path(aSyncFileDir).exists():
+        log("getSyncedClippingsJSON(): Directory does not exist: %s" % aSyncFileDir)
+        syncDirPath = Path(aSyncFileDir)
+        syncDirPath.mkdir(parents=True)
+ 
+    log("getSyncedClippingsJSON(): aSyncFileDir: %s" % aSyncFileDir)
+    syncFilePath = Path(aSyncFileDir) / gSyncFilename
+    if syncFilePath.exists():
+        log("getSyncedClippingsJSON(): Reading sync file '%s'" % syncFilePath)
+        file = open(syncFilePath, "r", encoding="utf-8")
         rv = file.read()
     else:
+        log("getSyncedClippingsJSON(): Sync file '%s' not found.\nGenerating new file from template." % syncFilePath)
         fileData = json.dumps(gDefaultClippingsData)
-        file = open(aSyncFilePath, "w", encoding="utf-8")
+        file = open(syncFilePath, "w", encoding="utf-8")
         file.write(fileData)
         rv = fileData
     if file is not None:
         file.close()
+    
     return rv
 
-def updateSyncedClippingsData(aSyncFilePath, aSyncedClippingsRawJSON):
+def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsRawJSON):
     syncedClippings = json.loads(aSyncedClippingsRawJSON)
     syncData = copy.deepcopy(gDefaultClippingsData)
     syncData["userClippingsRoot"] = syncedClippings
     syncFileData = json.dumps(syncData)
-
+    syncFilePath = Path(aSyncFileDir) / gSyncFilename
     try:
-        file = open(aSyncFilePath, "w", encoding="utf-8")
+        file = open(syncFilePath, "w", encoding="utf-8")
         file.write(syncFileData)
     except Exception as e:
         log("updateSyncedClippingsData(): Error writing to sync file '{0}': {1}".format(aSyncFilePath), e.message)
@@ -140,8 +150,9 @@ while True:
             resp = getResponseErr(e)
     elif msg["msgID"] == "get-synced-clippings":
         syncFilePath = getSyncFilePath()
+        syncData = getSyncedClippingsJSON(syncFilePath)
         resp = {
-            "syncedClippings": getSyncedClippingsJSON(syncFilePath)
+            "syncedClippingsJSON": syncData
         }
     elif msg["msgID"] == "set-synced-clippings":
         syncFilePath = getSyncFilePath()
