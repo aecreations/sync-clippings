@@ -150,10 +150,7 @@ while True:
             resp = getResponseErr(e)
     elif msg["msgID"] == "get-synced-clippings":
         syncFilePath = getSyncFilePath()
-        syncData = getSyncedClippingsJSON(syncFilePath)
-        resp = {
-            "syncedClippingsJSON": syncData
-        }
+        resp = getSyncedClippingsJSON(syncFilePath)
     elif msg["msgID"] == "set-synced-clippings":
         syncFilePath = getSyncFilePath()
         jsonData = msg["syncedClippings"]
