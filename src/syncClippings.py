@@ -65,10 +65,9 @@ def getSyncedClippingsJSON(aSyncFileDir):
     
     return rv
 
-def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsRawJSON):
-    syncedClippings = json.loads(aSyncedClippingsRawJSON)
+def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
     syncData = copy.deepcopy(gDefaultClippingsData)
-    syncData["userClippingsRoot"] = syncedClippings
+    syncData["userClippingsRoot"] = aSyncedClippingsData
     syncFileData = json.dumps(syncData)
     syncFilePath = Path(aSyncFileDir) / gSyncFilename
     try:
@@ -153,9 +152,9 @@ while True:
         resp = getSyncedClippingsJSON(syncFilePath)
     elif msg["msgID"] == "set-synced-clippings":
         syncFilePath = getSyncFilePath()
-        jsonData = msg["syncedClippings"]
+        syncData = msg["syncData"]
         try:
-            updateSyncedClippingsData(syncFilePath, jsonData)
+            updateSyncedClippingsData(syncFilePath, syncData)
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
