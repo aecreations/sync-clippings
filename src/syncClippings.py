@@ -41,21 +41,21 @@ def setSyncFilePath(aPath):
     with open(gConfFilename, "w") as configFile:
         conf.write(configFile)
     
-def getSyncedClippingsJSON(aSyncFileDir):
+def getSyncedClippingsData(aSyncFileDir):
     rv = ""
     if not Path(aSyncFileDir).exists():
-        log("getSyncedClippingsJSON(): Directory does not exist: %s" % aSyncFileDir)
+        log("getSyncedClippingsData(): Directory does not exist: %s" % aSyncFileDir)
         syncDirPath = Path(aSyncFileDir)
         syncDirPath.mkdir(parents=True)
  
-    log("getSyncedClippingsJSON(): aSyncFileDir: %s" % aSyncFileDir)
+    log("getSyncedClippingsData(): aSyncFileDir: %s" % aSyncFileDir)
     syncFilePath = Path(aSyncFileDir) / gSyncFilename
     if syncFilePath.exists():
-        log("getSyncedClippingsJSON(): Reading sync file '%s'" % syncFilePath)
+        log("getSyncedClippingsData(): Reading sync file '%s'" % syncFilePath)
         file = open(syncFilePath, "r", encoding="utf-8")
         rv = file.read()
     else:
-        log("getSyncedClippingsJSON(): Sync file '%s' not found.\nGenerating new file from template." % syncFilePath)
+        log("getSyncedClippingsData(): Sync file '%s' not found.\nGenerating new file from template." % syncFilePath)
         fileData = json.dumps(gDefaultClippingsData)
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(fileData)
@@ -149,7 +149,7 @@ while True:
             resp = getResponseErr(e)
     elif msg["msgID"] == "get-synced-clippings":
         syncFilePath = getSyncFilePath()
-        resp = getSyncedClippingsJSON(syncFilePath)
+        resp = getSyncedClippingsData(syncFilePath)
     elif msg["msgID"] == "set-synced-clippings":
         syncFilePath = getSyncFilePath()
         syncData = msg["syncData"]
