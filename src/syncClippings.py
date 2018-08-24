@@ -19,7 +19,7 @@ gConfFilename = "syncClippings.ini"
 gSyncFilename = "clippings-sync.json"
 gDefaultClippingsData = {
     "version": "6.0",
-    "createdBy": "Sync Clippings 1.0",
+    "createdBy": "Sync Clippings",
     "userClippingsRoot": []
 }
 
@@ -29,13 +29,13 @@ def getAppName():
 def getAppVer():
     return gAppVer
 
-def getSyncFilePath():
+def getSyncDir():
     conf = configparser.ConfigParser()
     conf.read(gConfFilename)
     rv = conf["Sync File"]["Path"]
     return rv
 
-def setSyncFilePath(aPath):
+def setSyncDir(aPath):
     conf = configparser.ConfigParser()
     conf["Sync File"] = { "Path": aPath }
     with open(gConfFilename, "w") as configFile:
@@ -135,26 +135,26 @@ while True:
             "appName": getAppName(),
             "appVersion": getAppVer()
         }
-    elif msg["msgID"] == "get-sync-file-path":
+    elif msg["msgID"] == "get-sync-dir":
         resp = {
-            "syncFilePath": getSyncFilePath()
+            "syncFilePath": getSyncDir()
         }
-    elif msg["msgID"] == "set-sync-file-path":
+    elif msg["msgID"] == "set-sync-dir":
         path = msg["filePath"]
-        log("Message 'set-sync-file-path': filePath = {0}".format(msg['filePath']))
+        log("Message 'set-sync-dir': filePath = {0}".format(msg['filePath']))
         try:
-            setSyncFilePath(path)
+            setSyncDir(path)
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
     elif msg["msgID"] == "get-synced-clippings":
-        syncFilePath = getSyncFilePath()
-        resp = getSyncedClippingsData(syncFilePath)
+        syncDir = getSyncDir()
+        resp = getSyncedClippingsData(syncDir)
     elif msg["msgID"] == "set-synced-clippings":
-        syncFilePath = getSyncFilePath()
+        syncDir = getSyncDir()
         syncData = msg["syncData"]
         try:
-            updateSyncedClippingsData(syncFilePath, syncData)
+            updateSyncedClippingsData(syncDir, syncData)
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
