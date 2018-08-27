@@ -14,7 +14,7 @@ DEBUG = True
 
 gAppName = "Sync Clippings"
 gAppInternalName = "syncClippings"
-gAppVer = "1.0a0+"
+gAppVer = "1.0a1"
 gConfFilename = "syncClippings.ini"
 gSyncFilename = "clippings-sync.json"
 gDefaultClippingsData = {
