@@ -3,7 +3,7 @@
 DIST_DIR = ../dist/syncClippings
 
 default:
-	pyinstaller --distpath ../dist syncClippings.py
+	pyinstaller --distpath ../dist --icon program.ico syncClippings.py
 	cp -v syncClippings.ini $(DIST_DIR)
 
 clean:
