@@ -1,0 +1,8 @@
+CREDITS
+=======
+
+The program icon for the Windows version of the Sync Clippings helper app is
+created by Royalflushxx (Sam Butcher)
+<http://www.iconarchive.com/show/systematrix-icons-by-royalflushxx/Program-icon.html>
+
+License: CC Attribution-Noncommercial-No Derivate 4.0 <https://creativecommons.org/licenses/by-nc-nd/4.0/>
