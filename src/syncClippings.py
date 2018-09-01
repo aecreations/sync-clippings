@@ -10,35 +10,37 @@ import configparser
 import copy
 from pathlib import Path
 
-DEBUG = True
+DEBUG = False
 
-gAppName = "Sync Clippings"
-gAppInternalName = "syncClippings"
-gAppVer = "1.0a1"
-gConfFilename = "syncClippings.ini"
-gSyncFilename = "clippings-sync.json"
+APP_NAME = "Sync Clippings"
+APP_SNAME = "syncClippings"
+APP_VER = "1.0a1"
+CONF_FILENAME = "syncClippings.ini"
+SYNC_FILENAME = "clippings-sync.json"
+
 gDefaultClippingsData = {
     "version": "6.0",
     "createdBy": "Sync Clippings",
     "userClippingsRoot": []
 }
 
+
 def getAppName():
-    return gAppName
+    return APP_NAME
 
 def getAppVer():
-    return gAppVer
+    return APP_VER
 
 def getSyncDir():
     conf = configparser.ConfigParser()
-    conf.read(gConfFilename)
+    conf.read(CONF_FILENAME)
     rv = conf["Sync File"]["Path"]
     return rv
 
 def setSyncDir(aPath):
     conf = configparser.ConfigParser()
     conf["Sync File"] = { "Path": aPath }
-    with open(gConfFilename, "w") as configFile:
+    with open(CONF_FILENAME, "w") as configFile:
         conf.write(configFile)
     
 def getSyncedClippingsData(aSyncFileDir):
@@ -49,7 +51,7 @@ def getSyncedClippingsData(aSyncFileDir):
         syncDirPath.mkdir(parents=True)
  
     log("getSyncedClippingsData(): aSyncFileDir: %s" % aSyncFileDir)
-    syncFilePath = Path(aSyncFileDir) / gSyncFilename
+    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if syncFilePath.exists():
         log("getSyncedClippingsData(): Reading sync file '%s'" % syncFilePath)
         file = open(syncFilePath, "r", encoding="utf-8")
@@ -69,7 +71,7 @@ def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
     syncData = copy.deepcopy(gDefaultClippingsData)
     syncData["userClippingsRoot"] = aSyncedClippingsData
     syncFileData = json.dumps(syncData)
-    syncFilePath = Path(aSyncFileDir) / gSyncFilename
+    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     try:
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(syncFileData)
@@ -124,7 +126,7 @@ while True:
     if "msgID" not in msg:
         err = "Error: expected key 'msgID' does not exist!"
         log(err)
-        sys.stderr.buffer.write("%s: %s" % (gAppInternalName, err))
+        sys.stderr.buffer.write("%s: %s" % (APP_SNAME, err))
         sys.stderr.buffer.flush()
         sys.exit(1)
 
