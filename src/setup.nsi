@@ -3,6 +3,8 @@
 # --------------------------------
 # Include header files
 
+  !include "LogicLib.nsh"
+  !include "x64.nsh"
   !include "MUI2.nsh"
   !include "WordFunc.nsh"
   !include "ZipDLL.nsh"
@@ -10,20 +12,40 @@
 # --------------------------------
 # General
 
+  !define APPNAME "Sync Clippings Helper"
+  !define APPVER "1.0b1+"
+
   # Name and file
-  Name "Sync Clippings Helper"
-  OutFile "Sync Clippings Helper Setup.exe"
+  Name "${APPNAME}"
+  OutFile "SyncClippings-${APPVER}-setup.exe"
 
   # Default installation folder
   # TO DO: For the 64-bit version of the native app, use "$PROGRAMFILES64".
   InstallDir "$PROGRAMFILES\Sync Clippings"
 
+  ${If} ${RunningX64}
+    # TEMPORARY - Force 32-bit mode.
+    SetRegView 32
+    # END TEMPORARY
+
+    # Set Registry view if running on 64-bit Windows
+    # TO DO: Enable this once a 64-bit version of the native app is generated.
+    #SetRegView 64
+  ${Else}
+    SetRegView 32
+  ${EndIf}
+  
   # Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\AE Creations\Sync Clippings" ""
 
   # Request application privileges 
   RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
+  # Version information
+  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper"
+  VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
+  VIProductVersion 1.0
+  
 # --------------------------------
 # Interface Settings
 
@@ -43,7 +65,6 @@
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 
-  !insertmacro MUI_UNPAGE_WELCOME
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
   !insertmacro MUI_UNPAGE_FINISH
