@@ -3,7 +3,6 @@
 # --------------------------------
 # Include header files
 
-  !include "LogicLib.nsh"
   !include "x64.nsh"
   !include "MUI2.nsh"
   !include "WordFunc.nsh"
