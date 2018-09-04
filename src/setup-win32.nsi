@@ -40,7 +40,7 @@
 # --------------------------------
 # Custom UI text
 
-  !define MUI_WELCOMEPAGE_TEXT "Sync Clippings Helper App 1.0 beta$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.$\r$\n$\r$\n$\r$\nClick Next to continue."
+  !define MUI_WELCOMEPAGE_TEXT "Sync Clippings Helper App 1.0 beta$\r$\n$\r$\nThe Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of Firefox.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
 
 
 # --------------------------------
