@@ -23,28 +23,17 @@
   # TO DO: For the 64-bit version of the native app, use "$PROGRAMFILES64".
   InstallDir "$PROGRAMFILES\Sync Clippings"
 
-  ${If} ${RunningX64}
-    # TEMPORARY - Force 32-bit mode.
-    SetRegView 32
-    # END TEMPORARY
-
-    # Set Registry view if running on 64-bit Windows
-    # TO DO: Enable this once a 64-bit version of the native app is generated.
-    #SetRegView 64
-  ${Else}
-    SetRegView 32
-  ${EndIf}
-  
   # Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\AE Creations\Sync Clippings" ""
+  InstallDirRegKey HKEY_CURRENT_USER "Software\AE Creations\Sync Clippings" ""
 
   # Request application privileges 
   RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
   # Version information
-  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper"
-  VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
-  VIProductVersion 1.0
+  ; VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper"
+  ; VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
+  ; VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
+  ; VIAddVersionKey /LANG=0 "FileVersion" "1.0"
   
 # --------------------------------
 # Interface Settings
@@ -103,7 +92,7 @@ Section "Install"
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
-  # Native app manifest location
+  SetRegView 64
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
   # Store installation folder
@@ -143,6 +132,7 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
+  SetRegView 64
   DeleteRegKey HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings"
   DeleteRegKey /ifempty HKCU "Software\AE Creations\Sync Clippings"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper"
