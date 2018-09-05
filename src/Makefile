@@ -1,10 +1,12 @@
-# Makefile for Sync Clippings helper app
+# Makefile for Sync Clippings helper app redistributables
 
 DIST_DIR = ../dist/syncClippings
 
 default:
 	pyinstaller --distpath ../dist --icon program.ico syncClippings.py
 	cp -v syncClippings.ini $(DIST_DIR)
+	cp -v ../LICENSE.txt $(DIST_DIR)
+	cp -v ../CREDITS.txt $(DIST_DIR)
 	cd $(DIST_DIR); zip syncClippings.zip *
 	cp $(DIST_DIR)/syncClippings.zip .
 
