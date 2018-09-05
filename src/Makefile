@@ -13,6 +13,7 @@ clean:
 	rm -rf build
 	rm syncClippings.spec
 	rm syncClippings.zip
+	rm -f *.exe
 	cd ..; rm -rf dist
 
 # END Makefile
