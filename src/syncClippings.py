@@ -67,9 +67,15 @@ def getSyncDirFromFolderPickerUI():
     if platform.system() == "Darwin":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
-    rv = filedialog.askdirectory()
-
+    fldrPath = filedialog.askdirectory()
     root.destroy()
+
+    osName = platform.system()
+    if osName == "Windows":
+        rv = fldrPath.replace("/", "\\")
+    else:
+        rv = fldrPath
+        
     return rv
         
 def getSyncedClippingsData(aSyncFileDir):
