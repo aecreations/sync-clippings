@@ -1,9 +1,8 @@
-# NSIS script for Sync Clippings Helper App setup for Windows
+# NSIS script for Sync Clippings Helper App setup for 32-bit Windows
 
 # --------------------------------
 # Include header files
 
-  !include "x64.nsh"
   !include "MUI2.nsh"
   !include "WordFunc.nsh"
   !include "ZipDLL.nsh"
@@ -16,10 +15,9 @@
 
   # Name and file
   Name "${APPNAME}"
-  OutFile "SyncClippings-${APPVER}-setup.exe"
+  OutFile "SyncClippings-${APPVER}-setup-win32.exe"
 
   # Default installation folder
-  # TO DO: For the 64-bit version of the native app, use "$PROGRAMFILES64".
   InstallDir "$PROGRAMFILES\Sync Clippings"
 
   # Get installation folder from registry if available
@@ -91,7 +89,6 @@ Section "Install"
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
-  SetRegView 64
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
   # Store installation folder
@@ -131,7 +128,6 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
-  SetRegView 64
   DeleteRegKey HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings"
   DeleteRegKey /ifempty HKCU "Software\AE Creations\Sync Clippings"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper"

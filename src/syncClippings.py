@@ -18,7 +18,7 @@ DEBUG = False
 
 APP_NAME = "Sync Clippings"
 APP_SNAME = "syncClippings"
-APP_VER = "1.0b1"
+APP_VER = "1.0b2"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
