@@ -12,15 +12,14 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.0b2"
+  !define APPVER "1.0b3"
 
   # Name and file
   Name "${APPNAME}"
   OutFile "SyncClippings-${APPVER}-setup.exe"
 
   # Default installation folder
-  # TO DO: For the 64-bit version of the native app, use "$PROGRAMFILES64".
-  InstallDir "$PROGRAMFILES\Sync Clippings"
+  InstallDir "$PROGRAMFILES64\Sync Clippings"
 
   # Get installation folder from registry if available
   InstallDirRegKey HKEY_CURRENT_USER "Software\AE Creations\Sync Clippings" ""
@@ -91,8 +90,15 @@ Section "Install"
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
+  # Generate the INI file.
+  CreateDirectory "$LOCALAPPDATA\Sync Clippings"
+  FileOpen $5 "$LOCALAPPDATA\Sync Clippings\syncClippings.ini" w
+  FileWrite $5 '[Sync File]$\r$\n'
+  FileWrite $5 'Path = $\r$\n'
+  FileClose $5
+
   SetRegView 64
-  WriteRegStr HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
+  WriteRegStr HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
   # Store installation folder
   WriteRegStr HKEY_CURRENT_USER "Software\AE Creations\Sync Clippings" "" $INSTDIR
@@ -132,7 +138,7 @@ Section "Uninstall"
   RMDir "$INSTDIR"
 
   SetRegView 64
-  DeleteRegKey HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings"
+  DeleteRegKey HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings"
   DeleteRegKey /ifempty HKCU "Software\AE Creations\Sync Clippings"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper"
 

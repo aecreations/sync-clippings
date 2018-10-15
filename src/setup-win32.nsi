@@ -11,7 +11,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.0b2"
+  !define APPVER "1.0b3"
 
   # Name and file
   Name "${APPNAME}"
@@ -89,7 +89,14 @@ Section "Install"
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
-  WriteRegStr HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
+  # Generate the INI file.
+  CreateDirectory "$LOCALAPPDATA\Sync Clippings"
+  FileOpen $5 "$LOCALAPPDATA\Sync Clippings\syncClippings.ini" w
+  FileWrite $5 '[Sync File]$\r$\n'
+  FileWrite $5 'Path = $\r$\n'
+  FileClose $5
+
+  WriteRegStr HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
   # Store installation folder
   WriteRegStr HKEY_CURRENT_USER "Software\AE Creations\Sync Clippings" "" $INSTDIR
@@ -128,7 +135,7 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
-  DeleteRegKey HKEY_LOCAL_MACHINE "Software\Mozilla\NativeMessagingHosts\syncClippings"
+  DeleteRegKey HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings"
   DeleteRegKey /ifempty HKCU "Software\AE Creations\Sync Clippings"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper"
 
