@@ -7,7 +7,7 @@ default:
 	cp -v ../LICENSE.txt $(DIST_DIR)
 	cp -v ../CREDITS.txt $(DIST_DIR)
 	cd $(DIST_DIR); zip syncClippings.zip *
-	cp $(DIST_DIR)/syncClippings.zip .
+	cp -v $(DIST_DIR)/syncClippings.zip .
 
 clean:
 	rm -f *~
