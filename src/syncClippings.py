@@ -35,16 +35,30 @@ def getAppName():
 def getAppVer():
     return APP_VER
 
+def getConfigFilePath():
+    rv = None
+    osName = platform.system()
+    homeDir = os.path.expanduser("~")
+    if osName == "Windows":
+        rv = homeDir + "\\AppData\\Local\\Sync Clippings\\" + CONF_FILENAME
+    elif osName == "Darwin":  # macOS
+        rv = homeDir + "/Library/Preferences/" + CONF_FILENAME
+    else:
+        rv = homeDir + "/.config/sync-clippings/" + CONF_FILENAME
+    return rv
+
 def getSyncDir():
     conf = configparser.ConfigParser()
-    conf.read(CONF_FILENAME)
+    confFilePath = getConfigFilePath()
+    conf.read(confFilePath)
     rv = conf["Sync File"]["Path"]
     return rv
 
 def setSyncDir(aPath):
     conf = configparser.ConfigParser()
+    confFilePath = getConfigFilePath()
     conf["Sync File"] = { "Path": aPath }
-    with open(CONF_FILENAME, "w") as configFile:
+    with open(confFilePath, "w") as configFile:
         conf.write(configFile)
 
 def getSyncDirFromFolderPickerUI():
