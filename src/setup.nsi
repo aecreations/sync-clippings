@@ -133,9 +133,10 @@ SectionEnd
 
 Section "Uninstall"
 
-  Delete "$INSTDIR\*"
-
-  RMDir "$INSTDIR"
+  RMDir $INSTDIR\tcl
+  RMDir $INSTDIR\tk
+  Delete $INSTDIR\*
+  RMDir $INSTDIR
 
   SetRegView 64
   DeleteRegKey HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings"
