@@ -11,14 +11,12 @@ import struct
 import configparser
 import copy
 from pathlib import Path
-import tkinter as tk
-from tkinter import filedialog
 
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
 APP_SNAME = "syncClippings"
-APP_VER = "1.0b2"
+APP_VER = "1.0b2+"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -60,37 +58,6 @@ def setSyncDir(aPath):
     conf["Sync File"] = { "Path": aPath }
     with open(confFilePath, "w") as configFile:
         conf.write(configFile)
-
-def getSyncDirFromFolderPickerUI():
-    rv = None
-    root = tk.Tk()
-    root.withdraw()
-
-    # Force the folder picker dialog to appear on top:
-    # https://stackoverflow.com/questions/3375227/how-to-give-tkinter-file-dialog-focus
-    # Make the root window almost invisible - no decorations, 0 size, top left corner.
-    root.overrideredirect(True)
-    root.geometry('0x0+0+0')
-
-    # Show window again and lift it to top so it can get focus.
-    root.deiconify()
-    root.lift()
-    root.focus_force()
-
-    # Additional hack for macOS.
-    if platform.system() == "Darwin":
-        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-
-    fldrPath = filedialog.askdirectory()
-    root.destroy()
-
-    osName = platform.system()
-    if osName == "Windows":
-        rv = fldrPath.replace("/", "\\")
-    else:
-        rv = fldrPath
-        
-    return rv
         
 def getSyncedClippingsData(aSyncFileDir):
     rv = ""
@@ -198,10 +165,6 @@ while True:
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
-    elif msg["msgID"] == "sync-dir-folder-picker":
-        resp = {
-            "syncFilePath": getSyncDirFromFolderPickerUI()
-        }
     elif msg["msgID"] == "get-synced-clippings":
         syncDir = getSyncDir()
         resp = getSyncedClippingsData(syncDir)
