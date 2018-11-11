@@ -76,10 +76,10 @@ def getSyncFileInfo(aSyncFileDir):
     fileInfo = os.stat(syncFilePath)
     fileSizeBytes = fileInfo.st_size
 
-    rv.fileName = SYNC_FILENAME
+    rv["fileName"] = SYNC_FILENAME
     
     # Convert file size to kilobytes, and round it to the nearest integer.
-    rv.fileSizeKB = round(int(fileSizeBytes) / 1024)
+    rv["fileSizeKB"] = round(int(fileSizeBytes) / 1024)
     
     return rv
 
