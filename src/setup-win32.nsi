@@ -1,3 +1,7 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 # NSIS script for Sync Clippings Helper App setup for 32-bit Windows
 
 # --------------------------------
@@ -11,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.0b3"
+  !define APPVER "1.0b2+"
 
   # Name and file
   Name "${APPNAME}"
