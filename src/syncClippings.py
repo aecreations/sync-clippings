@@ -78,8 +78,13 @@ def getSyncFileInfo(aSyncFileDir):
 
     rv["fileName"] = SYNC_FILENAME
     
-    # Convert file size to kilobytes, and round it to the nearest integer.
-    rv["fileSizeKB"] = round(int(fileSizeBytes) / 1024)
+    # Convert file size to kilobytes, and show 1 decimal place if < 10 KB.
+    numDigits = None
+    fileSizeKB = int(fileSizeBytes) / 1024
+    if fileSizeKB < 10:
+        numDigits = 1
+        
+    rv["fileSizeKB"] = round(fileSizeKB, numDigits)
     
     return rv
 
