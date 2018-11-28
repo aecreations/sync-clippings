@@ -15,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.0b3"
+  !define APPVER "1.0"
 
   # Name and file
   Name "${APPNAME}"
@@ -31,10 +31,18 @@
   RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
   # Version information
-  ; VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper"
-  ; VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
-  ; VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
-  ; VIAddVersionKey /LANG=0 "FileVersion" "1.0"
+  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup"
+  VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
+  VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
+  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup for 32-bit Windows"
+  VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
+  VIAddVersionKey /LANG=0 "OriginalFilename" "setup-win32.nsi"
+  VIAddVersionKey /LANG=0 "FileVersion" "1.0"
+  VIAddVersionKey /LANG=0 "PrivateBuild" ""
+  VIAddVersionKey /LANG=0 "SpecialBuild" ""
+  VIAddVersionKey /LANG=0 "LegalCopyright" ""
+  VIAddVersionKey /LANG=0 "LegalTrademarks" ""
+  VIAddVersionKey /LANG=0 "Comments" ""
   
 # --------------------------------
 # Interface Settings
@@ -44,7 +52,7 @@
 # --------------------------------
 # Custom UI text
 
-  !define MUI_WELCOMEPAGE_TEXT "Sync Clippings Helper App 1.0 beta$\r$\n$\r$\nThe Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of Firefox.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
+  !define MUI_WELCOMEPAGE_TEXT "The Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of Firefox.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
 
 
 # --------------------------------
@@ -117,10 +125,12 @@ Section "Install"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "Publisher" "AE Creations"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "HelpLink" "http://aecreations.sourceforge.net/resources.php"
   #WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLUpdateInfo" "$\"${UPDATEURL}$\""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLInfoAbout" "http://aecreations.sourceforge.net/clippings/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLInfoAbout" "http://aecreations.sourceforge.net/clippings/sync.php"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayVersion" "1.0"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "EstimatedSize" 88888  # KiB
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMajor" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMinor" 0
+  
   # There is no option for modifying or repairing the install
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "NoRepair" 1
