@@ -34,7 +34,7 @@
   VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup"
   VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
-  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup for 32-bit Windows"
+  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup (32-bit)"
   VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup-win32.nsi"
   VIAddVersionKey /LANG=0 "FileVersion" "1.0"
@@ -43,6 +43,7 @@
   VIAddVersionKey /LANG=0 "LegalCopyright" ""
   VIAddVersionKey /LANG=0 "LegalTrademarks" ""
   VIAddVersionKey /LANG=0 "Comments" ""
+  VIProductVersion 1.0.0.0
   
 # --------------------------------
 # Interface Settings
@@ -127,7 +128,7 @@ Section "Install"
   #WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLUpdateInfo" "$\"${UPDATEURL}$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLInfoAbout" "http://aecreations.sourceforge.net/clippings/sync.php"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayVersion" "1.0"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "EstimatedSize" 88888  # KiB
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "EstimatedSize" 10752  # KiB
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMajor" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMinor" 0
   

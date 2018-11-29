@@ -35,7 +35,7 @@
   VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup"
   VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
-  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup for 64-bit Windows"
+  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup (64-bit)"
   VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup.nsi"
   VIAddVersionKey /LANG=0 "FileVersion" "1.0"
@@ -44,7 +44,8 @@
   VIAddVersionKey /LANG=0 "LegalCopyright" ""
   VIAddVersionKey /LANG=0 "LegalTrademarks" ""
   VIAddVersionKey /LANG=0 "Comments" ""
-  
+  VIProductVersion 1.0.0.0
+
 # --------------------------------
 # Interface Settings
 
