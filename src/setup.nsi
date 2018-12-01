@@ -50,6 +50,13 @@
 # Interface Settings
 
   !define MUI_ABORTWARNING
+  !define MUI_ICON "syncClippings.ico"
+  !define MUI_HEADERIMAGE
+  !define MUI_HEADERIMAGE_RIGHT
+  !define MUI_HEADERIMAGE_BITMAP "headerImage.bmp"
+  !define MUI_UNICON "syncClippings.ico"
+  !define MUI_HEADERIMAGE_UNBITMAP "headerImage.bmp"
+  BrandingText " "
 
 # --------------------------------
 # Custom UI text
@@ -110,6 +117,8 @@ Section "Install"
   FileWrite $5 'Path = $\r$\n'
   FileClose $5
 
+  file "syncClippings.ico"
+
   SetRegView 64
   WriteRegStr HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
@@ -124,10 +133,9 @@ Section "Install"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "InstallLocation" "$\"$INSTDIR$\""
-  #WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayIcon" "$\"$INSTDIR\logo.ico$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayIcon" "$\"$INSTDIR\syncClippings.ico$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "Publisher" "AE Creations"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "HelpLink" "http://aecreations.sourceforge.net/clippings/sync.php"
-  #WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLUpdateInfo" "$\"${UPDATEURL}$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLInfoAbout" "http://aecreations.sourceforge.net/clippings/"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "EstimatedSize" 12493  # KiB
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayVersion" "1.0"
