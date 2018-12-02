@@ -50,11 +50,11 @@
 # Interface Settings
 
   !define MUI_ABORTWARNING
-  !define MUI_ICON "syncClippings.ico"
+  !define MUI_ICON "setup.ico"
   !define MUI_HEADERIMAGE
   !define MUI_HEADERIMAGE_RIGHT
   !define MUI_HEADERIMAGE_BITMAP "headerImage.bmp"
-  !define MUI_UNICON "syncClippings.ico"
+  !define MUI_UNICON "setup.ico"
   !define MUI_HEADERIMAGE_UNBITMAP "headerImage.bmp"
   BrandingText " "
 
