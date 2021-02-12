@@ -3,5 +3,8 @@
   "description": "Sync Clippings",
   "path": "C:\\cygwin\\home\\Alex\\mozilla\\sync-clippings\\src\\syncClippingsWin.bat",
   "type": "stdio",
-  "allowed_extensions": ["{91aa5abe-9de4-4347-b7b5-322c38dd9271}"]
+  "allowed_extensions": [
+    "{91aa5abe-9de4-4347-b7b5-322c38dd9271}",
+    "clippings-tb@aecreations.github.io"
+  ]
 }
