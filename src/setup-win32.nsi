@@ -15,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.0"
+  !define APPVER "1.0+"
 
   # Name and file
   Name "${APPNAME}"
@@ -104,11 +104,15 @@ Section "Install"
   FileWrite $4 '  "description": "Sync Clippings",$\r$\n'
   FileWrite $4 '  "path": "$0\\syncClippings.exe",$\r$\n'
   FileWrite $4 '  "type": "stdio",$\r$\n'
-  FileWrite $4 '  "allowed_extensions": ["{91aa5abe-9de4-4347-b7b5-322c38dd9271}"]$\r$\n'
+  FileWrite $4 '  "allowed_extensions": [$\r$\n'
+  FileWrite $4 '    "{91aa5abe-9de4-4347-b7b5-322c38dd9271}",$\r$\n'
+  FileWrite $4 '    "clippings-tb@aecreations.github.io"$\r$\n'
+  FileWrite $4 '  ]$\r$\n'
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
   # Generate the INI file.
+  # TO DO: Check first if it doesn't already exist!
   CreateDirectory "$LOCALAPPDATA\Sync Clippings"
   FileOpen $5 "$LOCALAPPDATA\Sync Clippings\syncClippings.ini" w
   FileWrite $5 '[Sync File]$\r$\n'
