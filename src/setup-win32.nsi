@@ -32,18 +32,18 @@
 
   # Version information
   VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup"
-  VIAddVersionKey /LANG=0 "ProductVersion" "1.0"
+  VIAddVersionKey /LANG=0 "ProductVersion" "1.1"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
   VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup (32-bit)"
   VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup-win32.nsi"
-  VIAddVersionKey /LANG=0 "FileVersion" "1.0"
+  VIAddVersionKey /LANG=0 "FileVersion" "1.1"
   VIAddVersionKey /LANG=0 "PrivateBuild" ""
   VIAddVersionKey /LANG=0 "SpecialBuild" ""
   VIAddVersionKey /LANG=0 "LegalCopyright" ""
   VIAddVersionKey /LANG=0 "LegalTrademarks" ""
   VIAddVersionKey /LANG=0 "Comments" ""
-  VIProductVersion 1.0.0.0
+  VIProductVersion 1.1.0.0
   
 # --------------------------------
 # Interface Settings
@@ -111,13 +111,15 @@ Section "Install"
   FileWrite $4 '}$\r$\n'
   FileClose $4
 
-  # Generate the INI file.
-  # TO DO: Check first if it doesn't already exist!
+  # Generate the INI file if it doesn't exist.
+  FindFirst $1 $2 "$LOCALAPPDATA\Sync Clippings\syncClippings.ini"
+  StrCmp $2 "syncClippings.ini" +6 +1
   CreateDirectory "$LOCALAPPDATA\Sync Clippings"
   FileOpen $5 "$LOCALAPPDATA\Sync Clippings\syncClippings.ini" w
   FileWrite $5 '[Sync File]$\r$\n'
   FileWrite $5 'Path = $\r$\n'
   FileClose $5
+  FindClose $1
 
   file "syncClippings.ico"
 
