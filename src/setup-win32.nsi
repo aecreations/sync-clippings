@@ -48,13 +48,16 @@
 # --------------------------------
 # Interface Settings
 
+  # Support for hi-res displays
+  ManifestDPIAware true
+
   !define MUI_ABORTWARNING
   !define MUI_ICON "setup.ico"
   !define MUI_HEADERIMAGE
   !define MUI_HEADERIMAGE_RIGHT
-  !define MUI_HEADERIMAGE_BITMAP "headerImage.bmp"
+  !define MUI_HEADERIMAGE_BITMAP "header.bmp"
   !define MUI_UNICON "setup.ico"
-  !define MUI_HEADERIMAGE_UNBITMAP "headerImage.bmp"
+  !define MUI_HEADERIMAGE_UNBITMAP "header.bmp"
   BrandingText " "
 
 # --------------------------------
@@ -94,7 +97,7 @@ Section "Install"
   ${WordReplace} $0 "\" "#" "+" $0
   ${WordReplace} $0 "#" "\\" "+" $0
 
-  file "syncClippings.zip"
+  File "syncClippings.zip"
   !insertmacro ZIPDLL_EXTRACT "syncClippings.zip" "$INSTDIR" "<ALL>"
 
   # Generate the native app manifest file.
@@ -121,7 +124,7 @@ Section "Install"
   FileClose $5
   FindClose $1
 
-  file "syncClippings.ico"
+  File "syncClippings.ico"
 
   WriteRegStr HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings" "" "$INSTDIR\syncClippings.json"
 
