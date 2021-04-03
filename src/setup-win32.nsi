@@ -14,6 +14,8 @@
 # --------------------------------
 # General
 
+  Unicode true
+
   !define APPNAME "Sync Clippings Helper"
   !define APPVER "1.1b1"
 
