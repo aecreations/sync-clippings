@@ -149,7 +149,7 @@ Section "Install"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "HelpLink" "http://aecreations.sourceforge.net/clippings/sync.php"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "URLInfoAbout" "http://aecreations.sourceforge.net/clippings/"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "EstimatedSize" 12493  # KiB
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayVersion" "1.0"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "DisplayVersion" "${APPVER}"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMajor" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Sync Clippings Helper" "VersionMinor" 0
   
