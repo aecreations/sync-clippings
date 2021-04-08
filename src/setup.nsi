@@ -169,6 +169,8 @@ Section "Uninstall"
   RMDir $INSTDIR\tk
   Delete $INSTDIR\*
   RMDir $INSTDIR
+  Delete "$LOCALAPPDATA\Sync Clippings\*"
+  RMDir "$LOCALAPPDATA\Sync Clippings"
 
   SetRegView 64
   DeleteRegKey HKEY_CURRENT_USER "Software\Mozilla\NativeMessagingHosts\syncClippings"
