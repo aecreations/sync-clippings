@@ -22,7 +22,7 @@ SYNC_FILENAME = "clippings-sync.json"
 
 gDefaultClippingsData = {
     "version": "6.1",
-    "createdBy": "Sync Clippings",
+    "createdBy": APP_NAME,
     "userClippingsRoot": []
 }
 
