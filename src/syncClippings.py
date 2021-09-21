@@ -189,6 +189,8 @@ while True:
     elif msg["msgID"] == "set-sync-dir":
         path = msg["filePath"]
         log("Message 'set-sync-dir': filePath = {0}".format(msg['filePath']))
+        if path.startswith("~/"):
+            path = os.path.expanduser("~") + path[1:len(path)]
         try:
             setSyncDir(path)
             resp = getResponseOK()
