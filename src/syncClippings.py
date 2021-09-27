@@ -11,12 +11,13 @@ import struct
 import configparser
 import copy
 from pathlib import Path
+import tkinter as tk
+from tkinter import filedialog
 
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_SNAME = "syncClippings"
-APP_VER = "1.1"
+APP_VER = "1.2"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -126,6 +127,28 @@ def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
         if file is not None:
             file.close()
     
+def promptSyncFldrPath():
+    rv = ""
+    root = tk.Tk()
+    root.withdraw()
+
+    root.overrideredirect(True)
+    root.geometry('0x0+0+0')
+
+    root.deiconify()
+    root.lift()
+    root.focus_force()
+
+    # Additional hack for macOS.
+    if platform.system() == "Darwin":
+        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
+    rv = filedialog.askdirectory()
+
+    # Get rid of the top-level instance once to make it invisible.
+    root.destroy()
+    return rv
+    
 def log(aMsg):
     if DEBUG:
         with open("debug.txt", "a") as file:
@@ -171,7 +194,7 @@ while True:
     if "msgID" not in msg:
         err = "Error: expected key 'msgID' does not exist!"
         log(err)
-        sys.stderr.buffer.write("%s: %s" % (APP_SNAME, err))
+        sys.stderr.buffer.write("%s: %s" % (APP_NAME, err))
         sys.stderr.buffer.flush()
         sys.exit(1)
 
@@ -210,6 +233,10 @@ while True:
             resp = getResponseOK()
         except Exception as e:
             resp = getResponseErr(e)
+    elif msg["msgID"] == "sync-dir-folder-picker":
+        resp = {
+            "syncFilePath": promptSyncFldrPath()
+        }
 
     if resp is not None:
         sendMessage(encodeMessage(resp))
