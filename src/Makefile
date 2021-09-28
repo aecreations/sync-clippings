@@ -12,7 +12,7 @@ default:
 mac:
 	pyinstaller --distpath ../dist syncClippings.py
 	cp -v ../LICENSE.txt $(DIST_DIR)
-	cp -v ../CREDITS.txt $(DIST_DIR)
+	cd $(DIST_DIR); zip syncClippings.zip *
 
 clean:
 	rm -f *~
