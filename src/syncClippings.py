@@ -17,7 +17,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "1.2"
+APP_VER = "1.2b1"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -47,10 +47,17 @@ def getConfigFilePath():
     return rv
 
 def getSyncDir():
+    rv = ""
     conf = configparser.ConfigParser()
     confFilePath = getConfigFilePath()
-    conf.read(confFilePath)
-    rv = conf["Sync File"]["Path"]
+    try:
+        conf.read(confFilePath)
+        rv = conf["Sync File"]["Path"]
+    except:
+        # Create config file if it doesn't exist.
+        file = open(confFilePath, "w", encoding="utf-8")
+        file.close()
+        setSyncDir("")
     return rv
 
 def setSyncDir(aPath):
