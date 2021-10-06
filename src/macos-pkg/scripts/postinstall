@@ -1,0 +1,53 @@
+#!/bin/bash
+
+appName=SyncClippings
+appVer=1.2.0
+installPath=/Library/${appName}/${appVer}
+exeFilename=syncClippings
+confFilename=syncClippings.ini
+nativeManifestFilename=syncClippings.json
+
+checkConfFile() {
+    configFileDir=~/Library/Preferences
+    local configFile="${configFileDir}/${confFilename}"
+
+    if [ -f $configFile ]; then
+	echo -e "Config file exists at ${configFile}"
+    fi
+}
+
+writeNativeManifest() {
+    nativeManifestDir=~/Library/Application\ Support/Mozilla/NativeMessagingHosts
+
+    local nativeManifestFile="${nativeManifestDir}/${nativeManifestFilename}"
+    local exePath="$installPath/$exeFilename"
+    echo "Writing native messaging manifest $nativeManifestFile"
+
+    # Check if the native manifest directory exists; if not, then create it.
+    test -d "$nativeManifestDir"
+    if [ $? -ne 0 ]; then
+	mkdir -pv "$nativeManifestDir"
+    fi
+    
+    cat << EOF > "$nativeManifestFile"
+{
+    "name": "syncClippings",
+    "description": "Sync Clippings",
+    "path": "$exePath",
+    "type": "stdio",
+    "allowed_extensions": [
+      "{91aa5abe-9de4-4347-b7b5-322c38dd9271}",
+      "clippings-tb@aecreations.github.io"
+    ]
+}
+EOF
+}
+
+main() {
+    checkConfFile
+    writeNativeManifest
+
+    echo "Post installation successfully completed"
+}
+
+main
