@@ -19,9 +19,15 @@ reset='\033[0m'
 
 
 checkPython() {
-    local isPython3=`which -s python3; echo $?`
+    if [ $os = "Darwin" ]; then
+	local isPython3=`which -s python3; echo $?`
+	test $isPython3 -eq 0
+    else
+	local isPython3=`which python3`
+	test -n "$isPython3"
+    fi
 
-    if [ $isPython3 -eq 0 ]; then
+    if [ $? -eq 0 ]; then
 	# Python 3 is installed
 	echo "Press CTRL+C at any time to cancel setup."
     else
@@ -74,7 +80,8 @@ writeExecFile() {
     local exeFile="${installPath}/${exeFilename}"
     echo "Writing Python script ${exeFile}"
 
-    cat << EOF > $exeFile
+    # TO DO: "Permission denied" error on Linux, even when using sudo
+    sudo cat << EOF > $exeFile
 #!/usr/bin/env python3
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -332,7 +339,11 @@ EOF
     fi
 
     echo "Setting file mode"
-    chmod -v 755 $exeFile
+    if [ $os = "Darwin" ]; then
+	chmod -v 755 $exeFile
+    else
+	sudo chmod -v 755 $exeFile
+    fi
 
     if [ $? -ne 0 ]; then
 	setupFailed=1
