@@ -80,8 +80,7 @@ writeExecFile() {
     local exeFile="${installPath}/${exeFilename}"
     echo "Writing Python script ${exeFile}"
 
-    # TO DO: "Permission denied" error on Linux, even when using sudo
-    sudo cat << EOF > $exeFile
+    sudo bash -c "cat > $exeFile" << EOF
 #!/usr/bin/env python3
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
