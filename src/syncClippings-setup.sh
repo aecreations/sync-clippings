@@ -10,6 +10,7 @@ exeFilename=syncClippings.py
 confFilename=syncClippings.ini
 nativeManifestFilename=syncClippings.json
 setupFailed=0
+noTkinter=0
 
 # ANSI colors
 bold='\033[1m'
@@ -29,7 +30,7 @@ checkPython() {
 
     if [ $? -eq 0 ]; then
 	# Python 3 is installed
-	echo "Press CTRL+C at any time to cancel setup."
+	echo "Press CTRL+C at any time to cancel."
     else
 	echo
 	echo "It looks like Python 3 is not installed."
@@ -42,6 +43,27 @@ checkPython() {
 	echo "Setup will now exit."
 	echo
 	exit 0
+    fi
+}
+
+checkTkinter() {
+    python3 -c "import tkinter" 2> /dev/null
+    if [ $? -ne 0 ]; then
+	echo
+	echo "The Python 3 Tkinter module is not installed."
+	echo "You may choose to continue with setup and install it afterwards,"
+	echo "or cancel setup now, install it, and then rerun Sync Clippings Helper setup."
+	echo -en "${bold}Continue with setup? [Y/n]: ${reset}"
+	read answer
+
+	while true; do
+	    [[ $answer == "y" || $answer == "Y" || $answer == "" ]] && break
+	    [[ $answer == "n" || $answer == "N" ]] && exit 0
+	    echo -n "Please answer 'y' or 'n': "
+	    read answer
+	done
+
+	noTkinter=1
     fi
 }
 
@@ -72,8 +94,8 @@ writeExecFile() {
 	mkdir -pv "${installPath}"
     else
 	echo
-	echo "Elevated permissions may be required to create the installation folder."
-	echo "When prompted, enter the superuser password."
+	echo "Elevated permissions required to create the installation folder."
+	echo "If prompted, enter password for sudo."
 	sudo mkdir -pv "${installPath}"
     fi
 
@@ -338,11 +360,7 @@ EOF
     fi
 
     echo "Setting file mode"
-    if [ $os = "Darwin" ]; then
-	chmod -v 755 $exeFile
-    else
-	sudo chmod -v 755 $exeFile
-    fi
+    sudo chmod -v 755 $exeFile
 
     if [ $? -ne 0 ]; then
 	setupFailed=1
@@ -415,6 +433,7 @@ main() {
     echo -e "${bold}Welcome to Sync Clippings Helper Setup${reset}"
 
     checkPython
+    checkTkinter
     promptInstallPath
     
     echo
@@ -430,6 +449,9 @@ main() {
 	echo -e "${red}An error occurred during setup. Check the above messages for error details.${reset}"
     else
 	echo "Setup successfully completed."
+	if [ $noTkinter -eq 1 ]; then
+	    echo "Remember to install the Python 3 Tkinter module."
+	fi
     fi
     echo
 }
