@@ -31,7 +31,7 @@ echo -e "${bold}Welcome to the Sync Clippings Helper Uninstaller${reset}"
 
 #Check running user
 if (( $EUID != 0 )); then
-    echo -e "${red}Elevated permissions required to uninstall. Rerun the uninstaller as superuser.${reset}"
+    echo -e "${red}Elevated permissions required to uninstall. Rerun the uninstaller with sudo.${reset}"
     echo
     exit
 fi

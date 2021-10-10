@@ -50,7 +50,7 @@ checkTkinter() {
     python3 -c "import tkinter" 2> /dev/null
     if [ $? -ne 0 ]; then
 	echo
-	echo "The Python 3 Tkinter module is not installed."
+	echo "The Python 3 Tkinter package is not installed."
 	echo "You may choose to continue with setup and install it afterwards,"
 	echo "or cancel setup now, install it, and then rerun Sync Clippings Helper setup."
 	echo -en "${bold}Continue with setup? [Y/n]: ${reset}"
@@ -450,7 +450,7 @@ main() {
     else
 	echo "Setup successfully completed."
 	if [ $noTkinter -eq 1 ]; then
-	    echo "Remember to install the Python 3 Tkinter module."
+	    echo "Remember to install the Python 3 Tkinter package."
 	fi
     fi
     echo
