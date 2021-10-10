@@ -36,8 +36,8 @@ checkPython() {
 	echo "It looks like Python 3 is not installed."
 	echo "Python 3 is needed to run the Sync Clippings Helper app. You can download it"
 	echo -e "from the Python website at ${blue}https://www.python.org/downloads${reset}."
-	echo "Alternatively, you can install it using your favorite package manager"
-	echo "such as Brew."
+	echo "Alternatively, you can install it using your favorite package manager such"
+	echo "as Brew. Make sure to also install the Tkinter package (python3-tk)."
 	echo
 	echo "After Python 3 is installed, rerun Sync Clippings Helper Setup."
 	echo "Setup will now exit."
@@ -50,7 +50,7 @@ checkTkinter() {
     python3 -c "import tkinter" 2> /dev/null
     if [ $? -ne 0 ]; then
 	echo
-	echo "The Python 3 Tkinter package is not installed."
+	echo "The Python 3 Tkinter package (python3-tk) is not installed."
 	echo "You may choose to continue with setup and install it afterwards,"
 	echo "or cancel setup now, install it, and then rerun Sync Clippings Helper setup."
 	echo -en "${bold}Continue with setup? [Y/n]: ${reset}"
