@@ -14,7 +14,7 @@ distFilename="syncClippings-${appVer}-setup.sh"
 tarFilename="syncClippings-${appVer}-setup.tar"
 checksumFile="sha256sum"
 
-cp $srcFilename $distFilename
+mv $srcFilename $distFilename
 tar -cf $tarFilename $distFilename
 gzip ${tarFilename}
 shasum --algorithm=256 ${tarFilename}.gz > $checksumFile
