@@ -90,14 +90,10 @@ promptInstallPath() {
 
 writeExecFile() {
     echo "Creating installation path ${installPath}"
-    if [ $os = "Darwin" ]; then
-	mkdir -pv "${installPath}"
-    else
-	echo
-	echo "Elevated permissions required to create the installation folder."
-	echo "If prompted, enter password for sudo."
-	sudo mkdir -pv "${installPath}"
-    fi
+    echo
+    echo "Elevated permissions required to create the installation folder."
+    echo "If prompted, enter password for sudo."
+    sudo mkdir -pv "${installPath}"
 
     local exeFile="${installPath}/${exeFilename}"
     echo "Writing Python script ${exeFile}"
