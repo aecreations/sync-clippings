@@ -12,10 +12,10 @@ appVer=${trimAppVer%%?}
 
 distFilename="syncClippings-${appVer}-setup.sh"
 tarFilename="syncClippings-${appVer}-setup.tar"
-checksumFile="sha256sum"
+checksumFile=sha256sum
 
 mv $srcFilename $distFilename
 tar -cf $tarFilename $distFilename
-gzip ${tarFilename}
+gzip $tarFilename
 shasum --algorithm=256 ${tarFilename}.gz > $checksumFile
 shasum --algorithm=256 --check $checksumFile
