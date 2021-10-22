@@ -19,6 +19,17 @@ red='\033[91m'
 reset='\033[0m'
 
 
+checkNotSudo() {
+    if [ $EUID -eq 0 ]; then
+	echo
+	echo "Sync Clippings Helper Setup should not be run using sudo, as this can cause"
+	echo "improper installation. Rerun Sync Clippings Helper Setup without sudo."
+	echo "Setup will now exit."
+	echo
+	exit 0
+    fi
+}
+
 checkPython() {
     if [ $os = "Darwin" ]; then
 	local isPython3=`which -s python3; echo $?`
@@ -37,7 +48,7 @@ checkPython() {
 	echo "Python 3 is needed to run the Sync Clippings Helper app. You can download it"
 	echo -e "from the Python website at ${blue}https://www.python.org/downloads${reset}."
 	echo "Alternatively, you can install it using your favorite package manager such"
-	echo "as Brew. Make sure to also install the Tkinter package (python3-tk)."
+	echo "as Homebrew. Make sure to also install the Tkinter package (python3-tk)."
 	echo
 	echo "After Python 3 is installed, rerun Sync Clippings Helper Setup."
 	echo "Setup will now exit."
@@ -428,6 +439,7 @@ main() {
     echo
     echo -e "${bold}Welcome to Sync Clippings Helper Setup${reset}"
 
+    checkNotSudo
     checkPython
     checkTkinter
     promptInstallPath
