@@ -403,9 +403,9 @@ EOF
 
 writeNativeManifest() {
     if [ $os = "Darwin" ]; then
-	nativeManifestDir=~/Library/Application\ Support/Mozilla/NativeMessagingHosts
+	nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
     else
-	nativeManifestDir=~/.mozilla/native-messaging-hosts
+	nativeManifestDir=/usr/lib/mozilla/native-messaging-hosts
     fi
 
     local nativeManifestFile="${nativeManifestDir}/${nativeManifestFilename}"
@@ -415,10 +415,10 @@ writeNativeManifest() {
     # Check if the native manifest directory exists; if not, then create it.
     test -d "$nativeManifestDir"
     if [ $? -ne 0 ]; then
-	mkdir -pv "$nativeManifestDir"
+	sudo mkdir -pv "$nativeManifestDir"
     fi
     
-    cat << EOF > "$nativeManifestFile"
+    sudo bash -c "cat > \"$nativeManifestFile\"" << EOF
 {
     "name": "syncClippings",
     "description": "Sync Clippings",
@@ -448,8 +448,8 @@ main() {
     echo "Starting installation."
 
     writeExecFile
-    writeConfFile
     writeNativeManifest
+    writeConfFile
 
     echo
 

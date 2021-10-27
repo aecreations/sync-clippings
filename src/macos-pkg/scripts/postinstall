@@ -17,7 +17,7 @@ checkConfFile() {
 }
 
 writeNativeManifest() {
-    nativeManifestDir=~/Library/Application\ Support/Mozilla/NativeMessagingHosts
+    nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
 
     local nativeManifestFile="${nativeManifestDir}/${nativeManifestFilename}"
     local exePath="$installPath/$exeFilename"
@@ -44,8 +44,8 @@ EOF
 }
 
 main() {
-    checkConfFile
     writeNativeManifest
+    checkConfFile
 
     echo "Post installation successfully completed"
 }

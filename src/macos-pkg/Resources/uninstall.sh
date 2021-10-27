@@ -81,7 +81,7 @@ fi
 
 # Perform additional cleanup
 echo "Deleting configuration files"
-nativeManifestFile=~/Library/Application\ Support/Mozilla/NativeMessagingHosts/syncClippings.json
+nativeManifestFile=/Library/Application\ Support/Mozilla/NativeMessagingHosts/syncClippings.json
 rm -f "$nativeManifestFile"
 
 configFiles=~/Library/Preferences/syncClippings.*
