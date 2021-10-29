@@ -369,9 +369,7 @@ EOF
     echo "Setting file mode"
     sudo chmod -v 755 $exeFile
 
-    if [ $? -ne 0 ]; then
-	setupFailed=1
-    fi
+    [[ $? -ne 0 ]] && setupFailed=1
 }
 
 writeConfFile() {
@@ -396,9 +394,7 @@ writeConfFile() {
 [Sync File]
 Path = 
 EOF
-    if [ $? -ne 0 ]; then
-	setupFailed=1
-    fi
+    [[ $? -ne 0 ]] && setupFailed=1
 }
 
 writeNativeManifest() {
@@ -430,9 +426,7 @@ writeNativeManifest() {
     ]
 }
 EOF
-    if [ $? -ne 0 ]; then
-	setupFailed=1
-    fi   
+    [[ $? -ne 0 ]] && setupFailed=1
 }
 
 main() {
