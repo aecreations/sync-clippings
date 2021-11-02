@@ -87,16 +87,14 @@ promptInstallPath() {
     read installPath
     pathHasSpaces=`echo "$installPath" | grep "\s"`
 
-    while [ -n "$pathHasSpaces" ]; do
+    while [[ -n $pathHasSpaces ]]; do
 	echo -e "${red}Folder names should not contain spaces.${reset}"
 	echo -en "${bold}Destination folder: ${reset}"
 	read installPath
         pathHasSpaces=`echo "$installPath" | grep "\s"`
     done
 
-    if [ -z "$installPath" ]; then
-	installPath=$defaultInstallPath
-    fi
+    [[ -z $installPath ]] && installPath=$defaultInstallPath
 }
 
 writeExecFile() {
@@ -129,7 +127,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "1.2b1"
+APP_VER = "1.2b2"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -262,7 +260,8 @@ def promptSyncFldrPath():
     if platform.system() == "Darwin":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
-    rv = filedialog.askdirectory()
+    homeDir = os.path.expanduser("~")
+    rv = filedialog.askdirectory(initialdir=homeDir)
 
     # Get rid of the top-level instance once to make it invisible.
     root.destroy()
@@ -360,6 +359,7 @@ while True:
     if resp is not None:
         sendMessage(encodeMessage(resp))
 EOF
+
     if [ $? -ne 0 ]; then
 	setupFailed=1
     else
@@ -383,7 +383,7 @@ writeConfFile() {
     local configFile=${configFileDir}/${confFilename}
 
     # Don't overwrite config file if it already exists.
-    if [ -f $configFile ]; then
+    if [[ -f $configFile ]]; then
 	echo -e "Config file exists at ${configFile}"
 	return
     fi
