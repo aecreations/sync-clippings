@@ -150,7 +150,8 @@ def promptSyncFldrPath():
     if platform.system() == "Darwin":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
-    rv = filedialog.askdirectory()
+    homeDir = os.path.expanduser("~")
+    rv = filedialog.askdirectory(initialdir=homeDir)
 
     # Get rid of the top-level instance once to make it invisible.
     root.destroy()
