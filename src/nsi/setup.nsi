@@ -16,7 +16,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.2b1"
+  !define APPVER "1.2b2+"
 
   # Name and file
   Name "${APPNAME}"
@@ -165,8 +165,10 @@ SectionEnd
 
 Section "Uninstall"
 
-  RMDir $INSTDIR\tcl
-  RMDir $INSTDIR\tk
+  RMDir /r $INSTDIR\tcl
+  RMDir /r $INSTDIR\tcl8
+  RMDir /r $INSTDIR\tk
+  
   Delete $INSTDIR\*
   RMDir $INSTDIR
   Delete "$LOCALAPPDATA\Sync Clippings\*"
