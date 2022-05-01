@@ -59,7 +59,6 @@
   !define MUI_UNICON "setup.ico"
   !define MUI_HEADERIMAGE_UNBITMAP "header.bmp"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "welcome.bmp"
-  !define MUI_UNWELCOMEFINISHPAGE_BITMAP "unwelcome.bmp"
   BrandingText " "
 
 # --------------------------------
