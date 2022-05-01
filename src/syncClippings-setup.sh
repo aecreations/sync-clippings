@@ -24,7 +24,6 @@ checkNotSudo() {
 	echo
 	echo "Sync Clippings Helper Setup should not be run using sudo, as this can cause"
 	echo "improper installation. Rerun Sync Clippings Helper Setup without sudo."
-	echo "Setup will now exit."
 	echo
 	exit 0
     fi
@@ -51,7 +50,6 @@ checkPython() {
 	echo "as Homebrew. Make sure to also install the Tkinter package (python3-tk)."
 	echo
 	echo "After Python 3 is installed, rerun Sync Clippings Helper Setup."
-	echo "Setup will now exit."
 	echo
 	exit 0
     fi
