@@ -10,8 +10,8 @@ quotedAppVer=`grep 'APP_VER = ' syncClippings.py | awk -F' = ' '{ print $2 }'`
 trimAppVer=${quotedAppVer:1}
 appVer=${trimAppVer%%?}
 
-distFilename="syncClippings-${appVer}-setup.sh"
-tarFilename="syncClippings-${appVer}-setup.tar"
+distFilename="sync-clippings-${appVer}-setup.sh"
+tarFilename="sync-clippings-${appVer}-setup.tar"
 checksumFile=sha256sum
 
 mv $srcFilename $distFilename
