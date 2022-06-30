@@ -81,7 +81,7 @@ fi
 
 # Delete installation folder
 cd /Library
-rmdir $PRODUCT
+rm -rf $PRODUCT
 
 # Perform additional cleanup
 echo "Deleting configuration files"
