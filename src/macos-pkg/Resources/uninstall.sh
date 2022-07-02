@@ -79,10 +79,6 @@ else
   echo "[3/3] [ERROR] Could not delete application" >&2
 fi
 
-# Delete installation folder
-cd /Library
-rm -rf $PRODUCT
-
 # Perform additional cleanup
 echo "Deleting configuration files"
 nativeManifestFile=/Library/Application\ Support/Mozilla/NativeMessagingHosts/syncClippings.json
