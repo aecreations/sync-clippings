@@ -131,7 +131,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "1.2b2"
+APP_VER = "1.2rc1"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -189,25 +189,19 @@ def getSyncFileInfo(aSyncFileDir):
     if not Path(aSyncFileDir).exists():
         log("getSyncFileInfo(): Directory does not exist: %s" % aSyncFileDir)
         return rv
-
     syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if not syncFilePath.exists():
         log("getSyncFileInfo(): Sync file does not exist at directory %s" % aSyncFileDir)
         return rv
-
     fileInfo = os.stat(syncFilePath)
     fileSizeBytes = fileInfo.st_size
-
     rv["fileName"] = SYNC_FILENAME
-    
     # Convert file size to kilobytes, and show 1 decimal place if < 10 KB.
     numDigits = None
     fileSizeKB = int(fileSizeBytes) / 1024
     if fileSizeKB < 10:
         numDigits = 1
-        
     rv["fileSizeKB"] = round(fileSizeKB, numDigits)
-    
     return rv
 
 def getSyncedClippingsData(aSyncFileDir):
@@ -216,7 +210,6 @@ def getSyncedClippingsData(aSyncFileDir):
         log("getSyncedClippingsData(): Directory does not exist: %s" % aSyncFileDir)
         syncDirPath = Path(aSyncFileDir)
         syncDirPath.mkdir(parents=True)
- 
     log("getSyncedClippingsData(): aSyncFileDir: %s" % aSyncFileDir)
     syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if syncFilePath.exists():
@@ -231,7 +224,6 @@ def getSyncedClippingsData(aSyncFileDir):
         rv = fileData
     if file is not None:
         file.close()
-    
     return rv
 
 def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
@@ -252,21 +244,19 @@ def promptSyncFldrPath():
     rv = ""
     root = tk.Tk()
     root.withdraw()
-
     root.overrideredirect(True)
     root.geometry('0x0+0+0')
-
     root.deiconify()
     root.lift()
     root.focus_force()
-
     # Additional hack for macOS.
     if platform.system() == "Darwin":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-
     homeDir = os.path.expanduser("~")
     rv = filedialog.askdirectory(initialdir=homeDir)
-
+    # On Linux, an empty tuple is returned if user cancelled from file picker.
+    if str(rv) == "()":
+        rv = ""
     # Get rid of the top-level instance once to make it invisible.
     root.destroy()
     return rv
