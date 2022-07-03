@@ -93,6 +93,12 @@ promptInstallPath() {
     done
 
     [[ -z $installPath ]] && installPath=$defaultInstallPath
+
+    # Allow prefixing the path with the tilde to denote the current user's
+    # home directory.
+    if [[ ${installPath:0:2} = '~/' ]]; then
+	installPath="${HOME}${installPath:1}"
+    fi
 }
 
 writeExecFile() {
