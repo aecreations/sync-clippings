@@ -32,10 +32,10 @@
   RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
   # Version information
-  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup"
+  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup (64-bit)"
   VIAddVersionKey /LANG=0 "ProductVersion" "1.2"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
-  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup (64-bit)"
+  VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup"
   VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup.nsi"
   VIAddVersionKey /LANG=0 "FileVersion" "1.2"
