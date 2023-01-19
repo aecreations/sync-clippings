@@ -50,6 +50,8 @@ done
 VERSION=__VERSION__
 PRODUCT=__PRODUCT__
 
+IDENTIFIER=io.aecreations.$PRODUCT
+
 echo
 echo "Starting uninstallation"
 # remove link to shorcut file
@@ -62,7 +64,7 @@ else
 fi
 
 #forget from pkgutil
-pkgutil --forget "org.$PRODUCT.$VERSION" > /dev/null 2>&1
+pkgutil --forget $IDENTIFIER > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
   echo "[2/3] [DONE] Successfully deleted application information"
