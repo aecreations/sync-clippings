@@ -18,7 +18,7 @@ echo -e "${bold}Welcome to the Sync Clippings Helper Uninstaller${reset}"
 echo
 echo "Sync Clippings Helper $VERSION will be uninstalled."
 while true; do
-    read -p "Do you wish to continue (y/n)? " answer
+    read -p "Do you want to continue? (y/n): " answer
     [[ $answer == "y" || $answer == "Y" ]] && break
     [[ $answer == "n" || $answer == "N" ]] && exit 0
     echo "Please answer with 'y' or 'n'"
@@ -75,5 +75,6 @@ else
     echo "Sync Clippings Helper has been successfully uninstalled."
 fi
 echo
+read -p "Press ENTER to exit: " exitPrmpt
 
 exit $exitStatus
