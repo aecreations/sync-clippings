@@ -7,6 +7,7 @@ import os
 import platform
 import sys
 import json
+import gzip
 import struct
 import configparser
 import copy
@@ -174,8 +175,10 @@ def getMessage():
     rv = json.loads(message)   
     return rv
 
-def encodeMessage(aMsgContent):
+def encodeMessage(aMsgContent, aIsCompressed):
     encodedContent = json.dumps(aMsgContent).encode('utf-8')
+    if aIsCompressed:
+        encodedContent = gzip.compress(encodedContent)
     encodedLength = struct.pack('@I', len(encodedContent))
     return {'length': encodedLength, 'content': encodedContent}
 
@@ -188,6 +191,7 @@ def sendMessage(aEncodedMsg):
 while True:
     msg = getMessage()
     resp = None
+    compress = False
 
     if "msgID" not in msg:
         err = "Error: expected key 'msgID' does not exist!"
@@ -223,6 +227,10 @@ while True:
     elif msg["msgID"] == "get-synced-clippings":
         syncDir = getSyncDir()
         resp = getSyncedClippingsData(syncDir)
+    elif msg["msgID"] == "get-compressed-synced-clippings":
+        syncDir = getSyncDir()
+        resp = getSyncedClippingsData(syncDir)
+        compress = True
     elif msg["msgID"] == "set-synced-clippings":
         syncDir = getSyncDir()
         syncData = msg["syncData"]
@@ -237,5 +245,5 @@ while True:
         }
 
     if resp is not None:
-        sendMessage(encodeMessage(resp))
+        sendMessage(encodeMessage(resp, compress))
 
