@@ -5,6 +5,7 @@
 
 import os
 import platform
+import stat
 import sys
 import json
 import gzip
@@ -71,7 +72,8 @@ def setSyncDir(aPath):
 def getSyncFileInfo(aSyncFileDir):
     rv = {
         "fileName": "",
-        "fileSizeKB": ""
+        "fileSizeKB": "",
+        "readOnly": False
     }
     if not Path(aSyncFileDir).exists():
         log("getSyncFileInfo(): Directory does not exist: %s" % aSyncFileDir)
@@ -89,6 +91,19 @@ def getSyncFileInfo(aSyncFileDir):
     if fileSizeKB < 10:
         numDigits = 1
     rv["fileSizeKB"] = round(fileSizeKB, numDigits)
+    rv["readOnly"] = isFileReadOnly(syncFilePath)
+    return rv
+
+def isFileReadOnly(aFilePath):
+    rv = False
+    fileInfo = os.stat(aFilePath)
+    osName = platform.system()
+    if osName == "Windows":
+        rv = bool(fileInfo.st_file_attributes & stat.FILE_ATTRIBUTE_READONLY)
+    else:
+        # Convert a file's mode to a string of the form '-rwxrwxrwx'
+        fileMode = stat.filemode(fileInfo.st_mode)
+        rv = fileMode[:3] == "-r-"
     return rv
 
 def getSyncedClippingsData(aSyncFileDir):
@@ -114,10 +129,12 @@ def getSyncedClippingsData(aSyncFileDir):
     return rv
 
 def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
+    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
+    if isFileReadOnly(syncFilePath):
+        raise TypeError
     syncData = copy.deepcopy(gDefaultClippingsData)
     syncData["userClippingsRoot"] = aSyncedClippingsData
     syncFileData = json.dumps(syncData)
-    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     try:
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(syncFileData)
