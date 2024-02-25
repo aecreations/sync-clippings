@@ -189,9 +189,9 @@ def sendMessage(aEncodedMsg):
 
     
 while True:
-    msg = getMessage()
     resp = None
     compress = False
+    msg = getMessage()
 
     if "msgID" not in msg:
         err = "Error: expected key 'msgID' does not exist!"
