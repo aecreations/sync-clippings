@@ -73,7 +73,7 @@ def getSyncFileInfo(aSyncFileDir):
     rv = {
         "fileName": "",
         "fileSizeKB": "",
-        "readOnly": False
+        "readOnly": None
     }
     if not Path(aSyncFileDir).exists():
         log("getSyncFileInfo(): Directory does not exist: %s" % aSyncFileDir)
