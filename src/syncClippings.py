@@ -9,6 +9,7 @@ import stat
 import sys
 import json
 import gzip
+import base64
 import struct
 import configparser
 import copy
@@ -19,7 +20,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "2.0a0+"
+APP_VER = "2.0"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -128,6 +129,22 @@ def getSyncedClippingsData(aSyncFileDir):
         file.close()
     return rv
 
+def getCompressedSyncedClippingsData(aSyncFileDir):
+    syncData = getSyncedClippingsData(aSyncFileDir)
+    encodedData = syncData.encode("utf-8")
+    log(f"getCompressedSyncedClippingsData(): Size of UTF-8 data: {len(encodedData)} bytes")
+    zippedData = gzip.compress(encodedData)
+    log(f"getCompressedSyncedClippingsData(): Size of zipped data: {len(zippedData)} bytes")
+    # Cannot serialize JSON data containing bytes, so encode the zipped data
+    # as a base64 string.
+    b64Data = base64.b64encode(zippedData)
+    ascData = b64Data.decode("ascii")
+    log(f"getCompressedSyncedClippingsData(): Size of base64-encoded string containing the zip data: {len(ascData)} chars")
+    return {
+        'format': "gzip",
+        'data': ascData,
+    }
+
 def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
     syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if isFileReadOnly(syncFilePath):
@@ -192,10 +209,9 @@ def getMessage():
     rv = json.loads(message)   
     return rv
 
-def encodeMessage(aMsgContent, aIsCompressed):
-    encodedContent = json.dumps(aMsgContent).encode('utf-8')
-    if aIsCompressed:
-        encodedContent = gzip.compress(encodedContent)
+def encodeMessage(aMsgContent):
+    # Eliminate whitespace to get the most compact JSON representation.
+    encodedContent = json.dumps(aMsgContent, separators=(',', ':')).encode('utf-8')
     encodedLength = struct.pack('@I', len(encodedContent))
     return {'length': encodedLength, 'content': encodedContent}
 
@@ -207,7 +223,6 @@ def sendMessage(aEncodedMsg):
     
 while True:
     resp = None
-    compress = False
     msg = getMessage()
 
     if "msgID" not in msg:
@@ -217,7 +232,7 @@ while True:
         sys.stderr.buffer.flush()
         sys.exit(1)
 
-    log("Value of key 'msgID' from 'msg' dictionary: %s" % msg["msgID"])
+    log("Received native app message '{0}'".format(msg["msgID"]))
     
     if msg["msgID"] == "get-app-version":
         resp = {
@@ -246,8 +261,7 @@ while True:
         resp = getSyncedClippingsData(syncDir)
     elif msg["msgID"] == "get-compressed-synced-clippings":
         syncDir = getSyncDir()
-        resp = getSyncedClippingsData(syncDir)
-        compress = True
+        resp = getCompressedSyncedClippingsData(syncDir)
     elif msg["msgID"] == "set-synced-clippings":
         syncDir = getSyncDir()
         syncData = msg["syncData"]
@@ -262,5 +276,5 @@ while True:
         }
 
     if resp is not None:
-        sendMessage(encodeMessage(resp, compress))
+        sendMessage(encodeMessage(resp))
 
