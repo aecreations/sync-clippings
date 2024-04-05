@@ -110,10 +110,9 @@ def isFileReadOnly(aFilePath):
 def getSyncedClippingsData(aSyncFileDir):
     rv = ""
     if not Path(aSyncFileDir).exists():
-        log("getSyncedClippingsData(): Directory does not exist: %s" % aSyncFileDir)
+        log(f"getSyncedClippingsData(): Directory does not exist: '{aSyncFileDir}'\nCreating it...")
         syncDirPath = Path(aSyncFileDir)
         syncDirPath.mkdir(parents=True)
-    log("getSyncedClippingsData(): aSyncFileDir: %s" % aSyncFileDir)
     syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if syncFilePath.exists():
         log("getSyncedClippingsData(): Reading sync file '%s'" % syncFilePath)
@@ -130,7 +129,15 @@ def getSyncedClippingsData(aSyncFileDir):
     return rv
 
 def getCompressedSyncedClippingsData(aSyncFileDir):
-    syncData = getSyncedClippingsData(aSyncFileDir)
+    syncData = ""
+    try:
+        syncData = getSyncedClippingsData(aSyncFileDir)
+    except Exception as e:
+        log("getCompressedSyncedClippingsData(): Error reading sync file from getSyncedClippingsData(): %s" % e)
+        return {
+            'status': "error",
+            'details': "{0}: {1}".format(type(e).__name__, str(e)),
+        }
     encodedData = syncData.encode("utf-8")
     log(f"getCompressedSyncedClippingsData(): Size of UTF-8 data: {len(encodedData)} bytes")
     zippedData = gzip.compress(encodedData)
@@ -141,6 +148,7 @@ def getCompressedSyncedClippingsData(aSyncFileDir):
     ascData = b64Data.decode("ascii")
     log(f"getCompressedSyncedClippingsData(): Size of base64-encoded string containing the zip data: {len(ascData)} chars")
     return {
+        'status': "ok",
         'format': "gzip",
         'data': ascData,
     }
@@ -195,8 +203,8 @@ def getResponseOK():
 def getResponseErr(aErr):
     template = "An exception of type {0} has occurred. Arguments: {1!r}"
     rv = {
-        "status": "failure",
-        "details": template.format(type(aErr).__name__, aErr.args)
+        'status': "error",
+        'details': template.format(type(aErr).__name__, aErr.args)
     }
     return rv
 
