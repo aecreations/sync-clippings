@@ -107,8 +107,9 @@ def isFileReadOnly(aFilePath):
         rv = fileMode[:3] == "-r-"
     return rv
 
-def getSyncedClippingsData(aSyncFileDir):
+def getSyncedClippingsData(aSyncFileDir, aIncludeSeparators=True):
     rv = ""
+    fileData = None
     if not Path(aSyncFileDir).exists():
         log(f"getSyncedClippingsData(): Directory does not exist: '{aSyncFileDir}'\nCreating it...")
         syncDirPath = Path(aSyncFileDir)
@@ -117,15 +118,42 @@ def getSyncedClippingsData(aSyncFileDir):
     if syncFilePath.exists():
         log("getSyncedClippingsData(): Reading sync file '%s'" % syncFilePath)
         file = open(syncFilePath, "r", encoding="utf-8")
-        rv = file.read()
+        fileData = file.read()
     else:
         log("getSyncedClippingsData(): Sync file '%s' not found.\nGenerating new file from template." % syncFilePath)
         fileData = json.dumps(gDefaultClippingsData)
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(fileData)
-        rv = fileData
     if file is not None:
         file.close()
+    if aIncludeSeparators:
+        rv = fileData
+    else:
+        rv = getSyncedClippingsDataWithoutSeparators(json.loads(fileData))
+    return rv
+
+def getSyncedClippingsDataWithoutSeparators(aClippingsData):
+    rv = ""
+    syncData = copy.deepcopy(gDefaultClippingsData)
+    userClippings = aClippingsData['userClippingsRoot']    
+    syncData['userClippingsRoot'] = removeSeparatorsHelper(userClippings)
+    rv = json.dumps(syncData)
+    return rv
+
+def removeSeparatorsHelper(aClippingsData):
+    rv = []
+    for item in aClippingsData:
+        if 'children' in item:
+            fldr = {
+                'name': item['name'],
+                'seq':  item['seq'],
+                'children': [],
+            }
+            fldr['children'] = removeSeparatorsHelper(item['children'])
+            rv.append(fldr)
+        else:
+            if not 'sep' in item:
+                rv.append(item)
     return rv
 
 def getCompressedSyncedClippingsData(aSyncFileDir):
