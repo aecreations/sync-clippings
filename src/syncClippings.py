@@ -25,7 +25,7 @@ CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
 gDefaultClippingsData = {
-    "version": "6.1",
+    "version": "6.2",
     "createdBy": APP_NAME,
     "userClippingsRoot": []
 }
