@@ -15,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "1.2"
+  !define APPVER "2.0b1"
 
   # Name and file
   Name "${APPNAME}"
@@ -31,19 +31,19 @@
   RequestExecutionLevel admin # Require admin rights on NT6+ (When UAC is turned on)
 
   # Version information
-  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper Setup (32-bit)"
-  VIAddVersionKey /LANG=0 "ProductVersion" "1.2"
+  VIAddVersionKey /LANG=0 "ProductName" "Sync Clippings Helper (32-bit)"
+  VIAddVersionKey /LANG=0 "ProductVersion" "2.0"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
   VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup"
   VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup-win32.nsi"
-  VIAddVersionKey /LANG=0 "FileVersion" "1.2"
+  VIAddVersionKey /LANG=0 "FileVersion" "2.0"
   VIAddVersionKey /LANG=0 "PrivateBuild" ""
   VIAddVersionKey /LANG=0 "SpecialBuild" ""
   VIAddVersionKey /LANG=0 "LegalCopyright" ""
   VIAddVersionKey /LANG=0 "LegalTrademarks" ""
   VIAddVersionKey /LANG=0 "Comments" ""
-  VIProductVersion 1.2.0.0
+  VIProductVersion 2.0.0.0
   
 # --------------------------------
 # Interface Settings
