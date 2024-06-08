@@ -30,11 +30,12 @@ checkNotSudo() {
 }
 
 checkPython() {
+    local isPython3
     if [ $os = "Darwin" ]; then
-	local isPython3=`which -s python3; echo $?`
+	isPython3=`which -s python3; echo $?`
 	test $isPython3 -eq 0
     else
-	local isPython3=`which python3`
+	isPython3=`which python3`
 	test -n "$isPython3"
     fi
 
@@ -76,14 +77,62 @@ checkTkinter() {
     fi
 }
 
-promptInstallPath() {
+checkUpgrade() {
+    local nativeManifestDir=''
+    if [[ $os = "Darwin" ]]; then
+	nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
+    else
+	nativeManifestDir=/usr/lib/mozilla/native-messaging-hosts
+    fi
+
+    if [[ ! -d $nativeManifestDir ]]; then
+	return 1
+    fi
+
+    local nativeManifestFile="${nativeManifestDir}/${nativeManifestFilename}"
+    if [[ ! -f $nativeManifestFile ]]; then
+	return 2
+    fi
+
+    # Parse the native manifest file to obtain the install directory.
+    local exeFile=`cat "$nativeManifestFile" | python3 -c "import sys, json; print(json.load(sys.stdin)['path'])"`
+
+    if [[ -f $exeFile ]]; then
+	local exePath=`dirname $exeFile`
+	echo
+	echo "Setup will upgrade Sync Clippings Helper installed at:"
+	echo $exePath
+	echo "Press ENTER to accept, or type in the location of a different folder"
+	echo "and then press ENTER."
+	echo -en "${bold}Destination folder: ${reset}"
+	read installPath
+	local pathHasSpaces=`echo "$installPath" | grep "\s"`
+
+	while [[ -n $pathHasSpaces ]]; do
+	    echo -e "${red}Folder names should not contain spaces.${reset}"
+	    echo -en "${bold}Destination folder: ${reset}"
+	    read installPath
+	    pathHasSpaces=`echo "$installPath" | grep "\s"`
+	done
+
+	[[ -z $installPath ]] && installPath="$exePath"
+
+	# Allow prefixing the path with the tilde to denote the current user's
+	# home directory.
+	if [[ ${installPath:0:2} = '~/' ]]; then
+	    installPath="${HOME}${installPath:1}"
+	fi
+    fi
+}
+
+promptInstallPath() {   
     echo
     echo "Setup will install Sync Clippings Helper in \"${defaultInstallPath}\"."
     echo "Press ENTER to accept, or type in the location of a different folder"
     echo "and then press ENTER."
     echo -en "${bold}Destination folder: ${reset}"
     read installPath
-    pathHasSpaces=`echo "$installPath" | grep "\s"`
+    local pathHasSpaces=`echo "$installPath" | grep "\s"`
 
     while [[ -n $pathHasSpaces ]]; do
 	echo -e "${red}Folder names should not contain spaces.${reset}"
@@ -102,14 +151,18 @@ promptInstallPath() {
 }
 
 writeExecFile() {
-    echo "Creating installation path ${installPath}"
-    echo
-    echo "Elevated permissions required to create the installation folder."
+    echo "Elevated permissions required for installation."
     echo "If prompted, enter password for sudo."
-    sudo mkdir -pv "${installPath}"
+    echo
+
+    # Skip creating app folder if upgrading.
+    if [[ ! -d $installPath ]]; then
+	echo "Creating folder $installPath"
+	sudo mkdir -pv "$installPath"
+    fi
 
     local exeFile="${installPath}/${exeFilename}"
-    echo "Writing Python script ${exeFile}"
+    echo "Writing Python script $exeFile"
 
     sudo bash -c "cat > $exeFile" << EOF
 #!/usr/bin/env python3
@@ -119,8 +172,11 @@ writeExecFile() {
 
 import os
 import platform
+import stat
 import sys
 import json
+import gzip
+import base64
 import struct
 import configparser
 import copy
@@ -131,12 +187,12 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "1.2"
+APP_VER = "2.0b1"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
 gDefaultClippingsData = {
-    "version": "6.1",
+    "version": "6.2",
     "createdBy": APP_NAME,
     "userClippingsRoot": []
 }
@@ -184,7 +240,8 @@ def setSyncDir(aPath):
 def getSyncFileInfo(aSyncFileDir):
     rv = {
         "fileName": "",
-        "fileSizeKB": ""
+        "fileSizeKB": "",
+        "readOnly": None
     }
     if not Path(aSyncFileDir).exists():
         log("getSyncFileInfo(): Directory does not exist: %s" % aSyncFileDir)
@@ -202,35 +259,102 @@ def getSyncFileInfo(aSyncFileDir):
     if fileSizeKB < 10:
         numDigits = 1
     rv["fileSizeKB"] = round(fileSizeKB, numDigits)
+    rv["readOnly"] = isFileReadOnly(syncFilePath)
     return rv
 
-def getSyncedClippingsData(aSyncFileDir):
+def isFileReadOnly(aFilePath):
+    rv = False
+    fileInfo = os.stat(aFilePath)
+    osName = platform.system()
+    if osName == "Windows":
+        rv = bool(fileInfo.st_file_attributes & stat.FILE_ATTRIBUTE_READONLY)
+    else:
+        # Convert a file's mode to a string of the form '-rwxrwxrwx'
+        fileMode = stat.filemode(fileInfo.st_mode)
+        rv = fileMode[:3] == "-r-"
+    return rv
+
+def getSyncedClippingsData(aSyncFileDir, aIncludeSeparators=True):
     rv = ""
+    fileData = None
     if not Path(aSyncFileDir).exists():
-        log("getSyncedClippingsData(): Directory does not exist: %s" % aSyncFileDir)
+        log(f"getSyncedClippingsData(): Directory does not exist: '{aSyncFileDir}'\nCreating it...")
         syncDirPath = Path(aSyncFileDir)
         syncDirPath.mkdir(parents=True)
-    log("getSyncedClippingsData(): aSyncFileDir: %s" % aSyncFileDir)
     syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     if syncFilePath.exists():
         log("getSyncedClippingsData(): Reading sync file '%s'" % syncFilePath)
         file = open(syncFilePath, "r", encoding="utf-8")
-        rv = file.read()
+        fileData = file.read()
     else:
         log("getSyncedClippingsData(): Sync file '%s' not found.\nGenerating new file from template." % syncFilePath)
         fileData = json.dumps(gDefaultClippingsData)
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(fileData)
-        rv = fileData
     if file is not None:
         file.close()
+    if aIncludeSeparators:
+        rv = fileData
+    else:
+        rv = getSyncedClippingsDataWithoutSeparators(json.loads(fileData))
     return rv
 
+def getSyncedClippingsDataWithoutSeparators(aClippingsData):
+    rv = ""
+    syncData = copy.deepcopy(gDefaultClippingsData)
+    userClippings = aClippingsData['userClippingsRoot']    
+    syncData['userClippingsRoot'] = removeSeparatorsHelper(userClippings)
+    rv = json.dumps(syncData)
+    return rv
+
+def removeSeparatorsHelper(aClippingsData):
+    rv = []
+    for item in aClippingsData:
+        if 'children' in item:
+            fldr = {
+                'name': item['name'],
+                'seq':  item['seq'],
+                'children': [],
+            }
+            fldr['children'] = removeSeparatorsHelper(item['children'])
+            rv.append(fldr)
+        else:
+            if not 'sep' in item:
+                rv.append(item)
+    return rv
+
+def getCompressedSyncedClippingsData(aSyncFileDir):
+    syncData = ""
+    try:
+        syncData = getSyncedClippingsData(aSyncFileDir)
+    except Exception as e:
+        log("getCompressedSyncedClippingsData(): Error reading sync file from getSyncedClippingsData(): %s" % e)
+        return {
+            'status': "error",
+            'details': "{0}: {1}".format(type(e).__name__, str(e)),
+        }
+    encodedData = syncData.encode("utf-8")
+    log(f"getCompressedSyncedClippingsData(): Size of UTF-8 data: {len(encodedData)} bytes")
+    zippedData = gzip.compress(encodedData)
+    log(f"getCompressedSyncedClippingsData(): Size of zipped data: {len(zippedData)} bytes")
+    # Cannot serialize JSON data containing bytes, so encode the zipped data
+    # as a base64 string.
+    b64Data = base64.b64encode(zippedData)
+    ascData = b64Data.decode("ascii")
+    log(f"getCompressedSyncedClippingsData(): Size of base64-encoded string containing the zip data: {len(ascData)} chars")
+    return {
+        'status': "ok",
+        'format': "gzip",
+        'data': ascData,
+    }
+
 def updateSyncedClippingsData(aSyncFileDir, aSyncedClippingsData):
+    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
+    if isFileReadOnly(syncFilePath):
+        raise TypeError
     syncData = copy.deepcopy(gDefaultClippingsData)
     syncData["userClippingsRoot"] = aSyncedClippingsData
     syncFileData = json.dumps(syncData)
-    syncFilePath = Path(aSyncFileDir) / SYNC_FILENAME
     try:
         file = open(syncFilePath, "w", encoding="utf-8")
         file.write(syncFileData)
@@ -274,8 +398,8 @@ def getResponseOK():
 def getResponseErr(aErr):
     template = "An exception of type {0} has occurred. Arguments: {1!r}"
     rv = {
-        "status": "failure",
-        "details": template.format(type(aErr).__name__, aErr.args)
+        'status': "error",
+        'details': template.format(type(aErr).__name__, aErr.args)
     }
     return rv
 
@@ -289,7 +413,8 @@ def getMessage():
     return rv
 
 def encodeMessage(aMsgContent):
-    encodedContent = json.dumps(aMsgContent).encode('utf-8')
+    # Eliminate whitespace to get the most compact JSON representation.
+    encodedContent = json.dumps(aMsgContent, separators=(',', ':')).encode('utf-8')
     encodedLength = struct.pack('@I', len(encodedContent))
     return {'length': encodedLength, 'content': encodedContent}
 
@@ -300,8 +425,8 @@ def sendMessage(aEncodedMsg):
 
     
 while True:
-    msg = getMessage()
     resp = None
+    msg = getMessage()
 
     if "msgID" not in msg:
         err = "Error: expected key 'msgID' does not exist!"
@@ -310,7 +435,7 @@ while True:
         sys.stderr.buffer.flush()
         sys.exit(1)
 
-    log("Value of key 'msgID' from 'msg' dictionary: %s" % msg["msgID"])
+    log("Received native app message '{0}'".format(msg["msgID"]))
     
     if msg["msgID"] == "get-app-version":
         resp = {
@@ -337,6 +462,9 @@ while True:
     elif msg["msgID"] == "get-synced-clippings":
         syncDir = getSyncDir()
         resp = getSyncedClippingsData(syncDir)
+    elif msg["msgID"] == "get-compressed-synced-clippings":
+        syncDir = getSyncDir()
+        resp = getCompressedSyncedClippingsData(syncDir)
     elif msg["msgID"] == "set-synced-clippings":
         syncDir = getSyncDir()
         syncData = msg["syncData"]
@@ -367,6 +495,7 @@ EOF
 }
 
 writeConfFile() {
+    local configFileDir=''
     if [ $os = "Darwin" ]; then
 	configFileDir=~/Library/Preferences
     else
@@ -392,6 +521,7 @@ EOF
 }
 
 writeNativeManifest() {
+    local nativeManifestDir=''
     if [ $os = "Darwin" ]; then
 	nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
     else
@@ -403,8 +533,7 @@ writeNativeManifest() {
     echo "Writing native messaging manifest $nativeManifestFile"
 
     # Check if the native manifest directory exists; if not, then create it.
-    test -d "$nativeManifestDir"
-    if [ $? -ne 0 ]; then
+    if [[ ! -d $nativeManifestDir ]]; then
 	sudo mkdir -pv "$nativeManifestDir"
     fi
     
@@ -430,7 +559,9 @@ main() {
     checkNotSudo
     checkPython
     checkTkinter
-    promptInstallPath
+
+    checkUpgrade
+    [[ $? -ne 0 ]] && promptInstallPath
     
     echo
     echo "Starting installation."
