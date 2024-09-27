@@ -582,6 +582,8 @@ main() {
 	fi
     fi
     echo
+    echo -en "${bold}Press ENTER to exit: ${reset}"
+    read pause
 }
 
 main
