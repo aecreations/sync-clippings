@@ -78,7 +78,7 @@ checkTkinter() {
 }
 
 checkUpgrade() {
-    local nativeManifestDir=''
+    local nativeManifestDir
     if [[ $os = "Darwin" ]]; then
 	nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
     else
@@ -95,13 +95,14 @@ checkUpgrade() {
     fi
 
     # Parse the native manifest file to obtain the install directory.
-    local exeFile=`cat "$nativeManifestFile" | python3 -c "import sys, json; print(json.load(sys.stdin)['path'])"`
+    local exeFile
+    exeFile=$(python3 -c "import sys, json; print(json.load(sys.stdin)['path'])" < "$nativeManifestFile")
 
     if [[ -f $exeFile ]]; then
 	local exePath=`dirname $exeFile`
 	echo
 	echo "Setup will upgrade Sync Clippings Helper installed at:"
-	echo $exePath
+	echo "$exePath"
 	echo "Press ENTER to accept, or type in the location of a different folder"
 	echo "and then press ENTER."
 	echo -en "${bold}Destination folder: ${reset}"
@@ -489,13 +490,13 @@ EOF
     fi
 
     echo "Setting file mode"
-    sudo chmod -v 755 $exeFile
+    sudo chmod -v 755 "$exeFile"
 
     [[ $? -ne 0 ]] && setupFailed=1
 }
 
 writeConfFile() {
-    local configFileDir=''
+    local configFileDir
     if [ $os = "Darwin" ]; then
 	configFileDir=~/Library/Preferences
     else
@@ -521,7 +522,7 @@ EOF
 }
 
 writeNativeManifest() {
-    local nativeManifestDir=''
+    local nativeManifestDir
     if [ $os = "Darwin" ]; then
 	nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
     else
