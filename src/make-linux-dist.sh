@@ -6,13 +6,13 @@
 srcFilename=syncClippings-setup.sh
 
 # Extract version number from Python script
-quotedAppVer=`grep 'APP_VER = ' syncClippings.py | awk -F' = ' '{ print $2 }'`
+quotedAppVer=$(grep 'APP_VER = ' syncClippings.py | awk -F' = ' '{ print $2 }')
 trimAppVer=${quotedAppVer:1}
 appVer=${trimAppVer%%?}
 
 distFilename="sync-clippings-${appVer}-setup.sh"
 tarFilename="sync-clippings-${appVer}-setup.tar"
-checksumFile=sha256sum
+checksumFile="sync-clippings-${appVer}-setup.tar.gz.sha256sum"
 
 mv $srcFilename $distFilename
 tar -cf $tarFilename $distFilename
