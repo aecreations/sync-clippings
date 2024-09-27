@@ -8,24 +8,23 @@ confFilename=syncClippings.ini
 nativeManifestFilename=syncClippings.json
 
 checkConfFile() {
-    configFileDir=~/Library/Preferences
+    local configFileDir=~/Library/Preferences
     local configFile="${configFileDir}/${confFilename}"
 
-    if [ -f $configFile ]; then
+    if [[ -f $configFile ]]; then
 	echo -e "Config file exists at ${configFile}"
     fi
 }
 
 writeNativeManifest() {
-    nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
+    local nativeManifestDir=/Library/Application\ Support/Mozilla/NativeMessagingHosts
 
     local nativeManifestFile="${nativeManifestDir}/${nativeManifestFilename}"
     local exePath="$installPath/$exeFilename"
     echo "Writing native messaging manifest $nativeManifestFile"
 
     # Check if the native manifest directory exists; if not, then create it.
-    test -d "$nativeManifestDir"
-    if [ $? -ne 0 ]; then
+    if [[ ! -d $nativeManifestDir ]]; then
 	mkdir -pv "$nativeManifestDir"
     fi
     
