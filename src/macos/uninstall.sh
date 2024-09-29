@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PRODUCT=SyncClippings
-VERSION=1.2.0
+VERSION=2.0.0
 IDENTIFIER=io.aecreations.$PRODUCT
 
 uninstErr=0
