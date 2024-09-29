@@ -1,7 +1,7 @@
 #!/bin/bash
 
 appName=SyncClippings
-appVer=1.2.0
+appVer=2.0.0
 installPath=/Library/${appName}/${appVer}
 exeFilename=syncClippings
 confFilename=syncClippings.ini
@@ -42,9 +42,18 @@ writeNativeManifest() {
 EOF
 }
 
+deleteOldVersions() {
+    local oldInstPath=/Library/${appName}/1.2.0
+    if [[ -d $oldInstPath ]]; then
+	echo "Removing previous version 1.2"
+	sudo rm -rf "$oldInstPath"
+    fi
+}
+
 main() {
     writeNativeManifest
     checkConfFile
+    deleteOldVersions
 
     echo "Post installation successfully completed"
 }
