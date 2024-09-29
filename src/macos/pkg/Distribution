@@ -14,9 +14,9 @@
     <![CDATA[
       function installCheck()
       {
-	  if (!(system.compareVersions(system.version.ProductVersion, '10.14.0') >= 0)) {
+	  if (!(system.compareVersions(system.version.ProductVersion, '11.7.10') >= 0)) {
 	      my.result.title = 'Unable to install';
-	      my.result.message = '__PRODUCT__ requires macOS 10.14 or later.';
+	      my.result.message = '__PRODUCT__ requires macOS 11.7.10 or newer.';
 	      my.result.type = 'Fatal';
 	      return false;
 	  }
