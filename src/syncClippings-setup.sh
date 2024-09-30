@@ -188,7 +188,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "2.0b1"
+APP_VER = "2.0"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
@@ -275,7 +275,7 @@ def isFileReadOnly(aFilePath):
         rv = fileMode[:3] == "-r-"
     return rv
 
-def getSyncedClippingsData(aSyncFileDir, aIncludeSeparators=True):
+def getSyncedClippingsData(aSyncFileDir):
     rv = ""
     fileData = None
     if not Path(aSyncFileDir).exists():
@@ -294,34 +294,7 @@ def getSyncedClippingsData(aSyncFileDir, aIncludeSeparators=True):
         file.write(fileData)
     if file is not None:
         file.close()
-    if aIncludeSeparators:
-        rv = fileData
-    else:
-        rv = getSyncedClippingsDataWithoutSeparators(json.loads(fileData))
-    return rv
-
-def getSyncedClippingsDataWithoutSeparators(aClippingsData):
-    rv = ""
-    syncData = copy.deepcopy(gDefaultClippingsData)
-    userClippings = aClippingsData['userClippingsRoot']    
-    syncData['userClippingsRoot'] = removeSeparatorsHelper(userClippings)
-    rv = json.dumps(syncData)
-    return rv
-
-def removeSeparatorsHelper(aClippingsData):
-    rv = []
-    for item in aClippingsData:
-        if 'children' in item:
-            fldr = {
-                'name': item['name'],
-                'seq':  item['seq'],
-                'children': [],
-            }
-            fldr['children'] = removeSeparatorsHelper(item['children'])
-            rv.append(fldr)
-        else:
-            if not 'sep' in item:
-                rv.append(item)
+    rv = fileData
     return rv
 
 def getCompressedSyncedClippingsData(aSyncFileDir):
@@ -583,7 +556,7 @@ main() {
     fi
     echo
     echo -en "${bold}Press ENTER to exit: ${reset}"
-    read pause
+    read exitPrmpt
 }
 
 main
