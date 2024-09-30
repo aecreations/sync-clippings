@@ -15,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "2.0b1"
+  !define APPVER "2.0rc1"
 
   # Name and file
   Name "${APPNAME}"
