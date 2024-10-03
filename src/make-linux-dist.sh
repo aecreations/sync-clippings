@@ -15,6 +15,7 @@ tarFilename="sync-clippings-${appVer}-setup.tar"
 checksumFile="sync-clippings-${appVer}-setup.tar.gz.sha256sum"
 
 mv $srcFilename $distFilename
+xattr -d com.apple.quarantine $distFilename
 tar -cf $tarFilename $distFilename
 gzip $tarFilename
 shasum --algorithm=256 ${tarFilename}.gz > $checksumFile
