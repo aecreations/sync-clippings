@@ -58,6 +58,15 @@ def getSyncDir():
         rv = conf["Sync File"]["Path"]
     except:
         # Create config file if it doesn't exist.
+        # On Windows, also create the settings folder during first run, since
+        # this can't be done from the setup program if it was executed by a
+        # non-admin user.
+        osName = platform.system()
+        if osName == "Windows":
+            homeDir = os.path.expanduser("~")
+            cfgFldr = Path(f"{homeDir}\\AppData\\Local\\Sync Clippings")
+            if not (cfgFldr.exists() and cfgFldr.is_dir()):
+                cfgFldr.mkdir()
         file = open(confFilePath, "w", encoding="utf-8")
         file.close()
         setSyncDir("")
