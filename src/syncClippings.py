@@ -20,7 +20,7 @@ from tkinter import filedialog
 DEBUG = False
 
 APP_NAME = "Sync Clippings"
-APP_VER = "2.0"
+APP_VER = "2.0.1a0+"
 CONF_FILENAME = "syncClippings.ini"
 SYNC_FILENAME = "clippings-sync.json"
 
