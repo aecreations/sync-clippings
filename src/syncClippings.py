@@ -63,9 +63,9 @@ def getSyncDir():
         # non-admin user.
         if platform.system() == "Windows":
             homeDir = os.path.expanduser("~")
-            cfgFldr = Path(f"{homeDir}\\AppData\\Local\\Sync Clippings")
-            if not (cfgFldr.exists() and cfgFldr.is_dir()):
-                cfgFldr.mkdir()
+            confDir = Path(f"{homeDir}\\AppData\\Local\\Sync Clippings")
+            if not (confDir.exists() and confDir.is_dir()):
+                confDir.mkdir()
         file = open(confFilePath, "w", encoding="utf-8")
         file.close()
         setSyncDir("")
