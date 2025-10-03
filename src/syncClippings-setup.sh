@@ -52,6 +52,8 @@ checkPython() {
 	echo
 	echo "After Python 3 is installed, rerun Sync Clippings Helper Setup."
 	echo
+	echo -en "${bold}Press ENTER to exit: ${reset}"
+	read exitPrmpt
 	exit 0
     fi
 }
