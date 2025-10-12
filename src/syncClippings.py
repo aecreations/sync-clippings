@@ -29,20 +29,39 @@ gDefaultClippingsData = {
     "createdBy": APP_NAME,
     "userClippingsRoot": []
 }
+gIsOrgEdition = False
+gIsRoamingProfile = False
 
+
+def init():
+    global gIsOrgEdition, gIsRoamingProfile
+    if platform.system() == "Windows":
+        confFile = Path("syncclippings-win.ini")
+        if confFile.exists() and confFile.is_file():
+            conf = configparser.ConfigParser()
+            conf.read(confFile)
+            # Org Edition app initialization.
+            gIsOrgEdition = bool(conf["App Params"]["orgEdition"])
+            gIsRoamingProfile = bool(conf["App Params"]["roamingProfile"])
 
 def getAppName():
     return APP_NAME
 
 def getAppVer():
-    return APP_VER
+    rv = APP_VER
+    if gIsOrgEdition:
+        rv = f"{APP_VER} (org)"
+    return rv
 
 def getConfigFilePath():
     rv = None
     osName = platform.system()
     homeDir = os.path.expanduser("~")
     if osName == "Windows":
-        rv = homeDir + "\\AppData\\Local\\Sync Clippings\\" + CONF_FILENAME
+        if gIsRoamingProfile:
+            rv = homeDir + "\\AppData\\Roaming\\Sync Clippings\\" + CONF_FILENAME
+        else:
+            rv = homeDir + "\\AppData\\Local\\Sync Clippings\\" + CONF_FILENAME
     elif osName == "Darwin":  # macOS
         rv = homeDir + "/Library/Preferences/" + CONF_FILENAME
     else:
@@ -237,7 +256,8 @@ def sendMessage(aEncodedMsg):
     sys.stdout.buffer.write(aEncodedMsg['content'])
     sys.stdout.buffer.flush()
 
-    
+
+init()
 while True:
     resp = None
     msg = getMessage()
