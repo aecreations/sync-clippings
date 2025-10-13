@@ -82,6 +82,7 @@ def getSyncDir():
         # non-admin user.
         if platform.system() == "Windows":
             homeDir = os.path.expanduser("~")
+            confDir = None
             if gIsRoamingProfile:
                 confDir = Path(f"{homeDir}\\AppData\\Roaming\\Sync Clippings")
             else:
