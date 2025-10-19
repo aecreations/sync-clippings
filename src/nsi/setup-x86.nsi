@@ -15,7 +15,7 @@
 # General
 
   !define APPNAME "Sync Clippings Helper"
-  !define APPVER "2.0.1b2"
+  !define APPVER "2.0.1rc1"
 
   # Name and file
   Name "${APPNAME}"
@@ -35,7 +35,7 @@
   VIAddVersionKey /LANG=0 "ProductVersion" "2.0.1"
   VIAddVersionKey /LANG=0 "CompanyName" "AE Creations"
   VIAddVersionKey /LANG=0 "FileDescription" "Sync Clippings Helper Setup"
-  VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup"
+  VIAddVersionKey /LANG=0 "InternalName" "SyncClippings-${APPVER}-setup-x86"
   VIAddVersionKey /LANG=0 "OriginalFilename" "setup-x86.nsi"
   VIAddVersionKey /LANG=0 "FileVersion" "2.0.1"
   VIAddVersionKey /LANG=0 "PrivateBuild" ""
@@ -64,8 +64,7 @@
 # --------------------------------
 # Custom UI text
 
-  !define MUI_WELCOMEPAGE_TEXT "Sync Clippings Helper BETA ${APPVER} $\r$\n$\r$\nThe Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of those applications.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
-  #!define MUI_WELCOMEPAGE_TEXT "The Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of those applications.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
+  !define MUI_WELCOMEPAGE_TEXT "The Sync Clippings Helper application works quietly in the background to keep your synced clippings updated between Firefox and Thunderbird, or other instances of those applications.$\r$\n$\r$\nSetup will guide you through the installation of the Sync Clippings Helper App.  Click Next to continue."
 
 
 # --------------------------------
